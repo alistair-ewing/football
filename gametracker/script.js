@@ -169,34 +169,40 @@ function assistEvent() {// seelect the goal scorer from players
 	playerEvent('assist', 'assister', false);
 }
 
-const cornerL = document.getElementById("cornerL");
-cornerL.addEventListener("click", cornerLEvent);
-function cornerLEvent() {// seelect the goal scorer from players
-	playerEvent('cornerL', 'cornertakerL', true);
-}
-
-const throwinL = document.getElementById("throwinL");
-throwinL.addEventListener("click", throwinLEvent);
-function throwinLEvent() {// seelect the goal scorer from players
-	playerEvent('throwinL', 'throwintakerL', true);
-}
-
-const cornerR = document.getElementById("cornerR");
-cornerR.addEventListener("click", cornerREvent);
-function cornerREvent() {// seelect the goal scorer from players
-	playerEvent('cornerR', 'cornertakerR', true);
-}
-
-const throwinR = document.getElementById("throwinR");
-throwinR.addEventListener("click", throwinREvent);
-function throwinREvent() {// seelect the goal scorer from players
-	playerEvent('throwinR', 'throwintakerR', true);
-}
-
 const penalty = document.getElementById("penalty");
 penalty.addEventListener("click", penaltyEvent);
 function penaltyEvent() {// seelect the goal scorer from players
 	playerEvent('penalty', 'penaltytaker', true);
+}
+
+const freekick = document.getElementById("freekick");
+freekick.addEventListener("click", freekickEvent);
+function freekickEvent() {// seelect the goal scorer from players
+    addEvent("freekick", []);
+}
+
+const cornerours = document.getElementById("cornerOurs");
+cornerours.addEventListener("click", corneroursEvent);
+function corneroursEvent() {// seelect the goal scorer from players
+    addEvent("cornerours", []);
+}
+
+const throwinours = document.getElementById("throwinOurs");
+throwinours.addEventListener("click", throwinoursEvent);
+function throwinoursEvent() {// seelect the goal scorer from players
+    addEvent("throwinours", []);
+}
+
+const cornertheirs = document.getElementById("cornerTheirs");
+cornertheirs.addEventListener("click", cornertheirsEvent);
+function cornertheirsEvent() {// seelect the goal scorer from players
+    addEvent("cornertheirs", []);
+}
+
+const throwintheirs = document.getElementById("throwinTheirs");
+throwintheirs.addEventListener("click", throwintheirsEvent);
+function throwintheirsEvent() {// seelect the goal scorer from players
+    addEvent("throwintheirs", []);
 }
 
 const substitute = document.getElementById("substitute");
