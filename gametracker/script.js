@@ -4,7 +4,8 @@ var playing = [];
 var subs = [];
 var events = [];
 var summary = [];
-var summaryEvents = ['shot', 'goal', 'assist', 'penslty', 'throwinL', 'cornerL', 'throwinR', 'cornerR'];
+var summaryEvents = ['shot', 'goal', 'assist', 'penalty','yellowcard', 'redcard', 'substituteoff'];
+var nonplayerEvents = ['ourpass', 'theirpass', 'freekick', 'cornerOurs', 'cornerTheirs', 'throwinOurs', 'throwinTheirs'];
 var timeAccuracy = 30; 
 
 var startDatetime = "";
@@ -139,88 +140,26 @@ function updateHalf(half, datetime, append){
 	document.getElementById(half).innerHTML += append + time;					
 }
 
-const ourpass = document.getElementById("ourpass");
-ourpass.addEventListener("click", ourpassEvent);
-function ourpassEvent() {// seelect the goal scorer from players
-    addEvent("ourpass", []);
+for ( i = 0; i < nonplayerEvents.length; i++ ){
+	var evt = nonplayerEvents[i];
+	if ( document.getElementById(evt) ){
+		var element = document.getElementById(evt);
+		element.addEventListener("click", triggerNonPlayerEvent);	
+	} else {
+		alert('Couldnt find ' + evt);
+	}
+}
+function triggerNonPlayerEvent() {
+	addEvent(event.target.id, []);
 }
 
-const theirpass = document.getElementById("theirpass");
-theirpass.addEventListener("click", theirpassEvent);
-function theirpassEvent() {// seelect the goal scorer from players
-    addEvent("theirpass", []);
+for ( i = 0; i < summaryEvents.length; i++ ){
+	var evt = summaryEvents[i];
+	var element = document.getElementById(evt);
+	element.addEventListener("click", triggerPlayerEvent);
 }
-
-const shot = document.getElementById("shot");
-shot.addEventListener("click", shotEvent);
-function shotEvent() {// seelect the goal scorer from players
-	playerEvent('shot', 'shooter', true);
-}
-
-const goal = document.getElementById("goal");
-goal.addEventListener("click", goalEvent);
-function goalEvent() {// seelect the goal scorer from players
-	playerEvent('goal', 'scorer', true);
-}
-
-const assist = document.getElementById("assist");
-assist.addEventListener("click", assistEvent);
-function assistEvent() {// seelect the goal scorer from players
-	playerEvent('assist', 'assister', false);
-}
-
-const penalty = document.getElementById("penalty");
-penalty.addEventListener("click", penaltyEvent);
-function penaltyEvent() {// seelect the goal scorer from players
-	playerEvent('penalty', 'penaltytaker', true);
-}
-
-const freekick = document.getElementById("freekick");
-freekick.addEventListener("click", freekickEvent);
-function freekickEvent() {// seelect the goal scorer from players
-    addEvent("freekick", []);
-}
-
-const cornerours = document.getElementById("cornerOurs");
-cornerours.addEventListener("click", corneroursEvent);
-function corneroursEvent() {// seelect the goal scorer from players
-    addEvent("cornerours", []);
-}
-
-const throwinours = document.getElementById("throwinOurs");
-throwinours.addEventListener("click", throwinoursEvent);
-function throwinoursEvent() {// seelect the goal scorer from players
-    addEvent("throwinours", []);
-}
-
-const cornertheirs = document.getElementById("cornerTheirs");
-cornertheirs.addEventListener("click", cornertheirsEvent);
-function cornertheirsEvent() {// seelect the goal scorer from players
-    addEvent("cornertheirs", []);
-}
-
-const throwintheirs = document.getElementById("throwinTheirs");
-throwintheirs.addEventListener("click", throwintheirsEvent);
-function throwintheirsEvent() {// seelect the goal scorer from players
-    addEvent("throwintheirs", []);
-}
-
-const substitute = document.getElementById("substitute");
-substitute.addEventListener("click", substituteEvent);
-function substituteEvent() {// seelect the goal scorer from players
-	playerEvent('substitute', 'substituteoff', false);
-}
-
-const yellowcard = document.getElementById("yellowcard");
-yellowcard.addEventListener("click", yellowcardEvent);
-function yellowcardEvent() {// seelect the goal scorer from players
-	playerEvent('yellowcard', 'yellowcarder', true);
-}
-
-const redcard = document.getElementById("redcard");
-redcard.addEventListener("click", redcardEvent);
-function redcardEvent() {// seelect the goal scorer from players
-	playerEvent('redcard', 'redcarder', true);
+function triggerPlayerEvent() {
+	playerEvent(event.target.id, true);
 }
 
 const extract = document.getElementById("export");
@@ -241,7 +180,7 @@ function format(events){
 	return(output);
 }
 
-function playerEvent(evt, name, opposition){
+function playerEvent(evt, opposition){
 	var playerlist = [];
 	for (i = 0; i < playing.length; i++){
 		var playerSummary = '';				
@@ -251,87 +190,38 @@ function playerEvent(evt, name, opposition){
 				playerSummary = '&nbsp;[' + summary[evt][player] + ']';
 			}
 		}
-		playerlist.push('<span class="button" onclick="' + name + 'Event(this);" id="' + player + '">' + player + playerSummary + '</span>');
+		playerlist.push('<span class="button active" onclick="recordEvent(\'' + evt + '\');" id="' + player + '">' + player + playerSummary + '</span>');
 	}
-	if (opposition){ playerlist.push('<span class="button" onclick="' + name + 'Event(this);" id="opposition">opposition</span>') };
-	document.getElementById('playing').innerHTML = '<form class="button" name="' + name + 's">' + playerlist.join('<span class="button"> | </span>') + '</form>';
+	if (opposition){ playerlist.push('<span class="button active" onclick="recordEvent(\'' + evt + '\');" id="opposition">opposition</span>') };
+	document.getElementById('playing').innerHTML = '<form class="button" name="' + evt + 's">' + playerlist.join('&nbsp;|&nbsp;') + '</form>';
 }
 
-function subsEvent(event, playeroff){
+function recordEvent(name){
+	var player = event.target.id;
+	if ( name == 'substituteoff' ){
+		
+		var subslist = [];
+		for (i = 0; i < subs.length; i++){
+			var sub = subs[i];
+			subslist.push('<span class="button active" onclick="recordEvent(\'substituteon\');" id="' + sub + '_' + player + '">' + sub + '</span>');
+		}
+		document.getElementById('subs').innerHTML = '<form name="' + event + 's">' + subslist.join('&nbsp;|&nbsp;') + '</form>';
 
-	var subslist = [];
-	for (i = 0; i < subs.length; i++){
-		var sub = subs[i];
-		subslist.push('<span class="button" onclick="' + event + 'Event(this);" id="' + sub + '_' + playeroff + '">' + sub + '</span>');
+	} else if ( name == 'substituteon' ){
+		[playeron, playeroff] = event.target.id.split("_");
+		removePlayer(playing, playeroff);
+		addPlayer(subs, playeroff);
+		removePlayer(subs, playeron);
+		addPlayer(playing, playeron);
+		addEvent("substitute", [playeron, playeroff]);
+		updatePlayers();
+	} else {
+		addEvent(name, [player]);
+		updatePlayers();
+		if ( name == 'scorer' ){
+			updateScore();
+		}
 	}
-	document.getElementById('subs').innerHTML = '<form name="' + event + 's">' + subslist.join('<span class="button"> | </span>') + '</form>';
-}
-
-function shooterEvent() {
-    addEvent("shot", [event.target.id]);
-	updatePlayers();
-}
-	
-function scorerEvent() {
-    addEvent("goal", [event.target.id]);
-	updatePlayers();
-	updateScore();
-}
-	
-function assisterEvent() {
-    addEvent("assist", [event.target.id]);
-	updatePlayers();
-}
-	
-function penaltytakerEvent() {
-    addEvent("penalty", [event.target.id]);
-	updatePlayers();
-}
-
-function cornertakerLEvent() {
-    addEvent("cornerL", [event.target.id]);
-	updatePlayers();
-}
-
-function throwintakerLEvent() {
-    addEvent("throwinL", [event.target.id]);
-	updatePlayers();
-}
-
-function cornertakerREvent() {
-    addEvent("cornerR", [event.target.id]);
-	updatePlayers();
-}
-
-function throwintakerREvent() {
-    addEvent("throwinR", [event.target.id]);
-	updatePlayers();
-}
-
-function redcarderEvent() {
-    addEvent("redcard", [event.target.id]);
-	updatePlayers();
-}
-
-function yellowcarderEvent() {
-    addEvent("yellowcard", [event.target.id]);
-	updatePlayers();
-}
-
-function substituteoffEvent() {
-	var playeroff = event.target.id;
-	updatePlayers();
-	subsEvent('substituteon', playeroff);
-}
-
-function substituteonEvent() {
-	[playeron, playeroff] = event.target.id.split("_");
-	removePlayer(playing, playeroff);
-	addPlayer(subs, playeroff);
-	removePlayer(subs, playeron);
-	addPlayer(playing, playeron);
-    addEvent("substitute", [playeron, playeroff]);
-	updatePlayers();
 }
 
 function removePlayer(array, player){
@@ -347,11 +237,11 @@ function updatePlayers(){
 	var currentSubs = [];
 	for (i = 0; i < playing.length; i++){
 		var player = playing[i];
-		currentPlaying.push( '<span class="button">(' + gametime(player) + ')&nbsp;' + player + '</span>');
+		currentPlaying.push( '<span class="button">' + player + '</span>');
 	}
 	for (i = 0; i < subs.length; i++){
 		var sub = subs[i];
-		currentSubs.push( '<span class="button">(' + gametime(sub) + ')&nbsp;' + sub + '</span>');
+		currentSubs.push( '<span class="button">' + sub + '</span>');
 	}
 	document.getElementById('playing').innerHTML = currentPlaying.join('<span class="button"> | </span>');
 	if ( subs.length == 0 ){
@@ -359,6 +249,32 @@ function updatePlayers(){
 	} else {
 		document.getElementById('subs').innerHTML = currentSubs.join('<span class="button"> | </span>');
 	}
+	
+	var playerSummary = "";
+	playerSummary = '<table><tr><td>Name</td><td class="summary">Game time</td>';
+	for (j = 0; j < summaryEvents.length; j++){
+		var evt = summaryEvents[j];
+		playerSummary += '<td class="summary">' + evt + '</td>';
+	}
+	playerSummary += '</tr>';
+	for (i = 0; i < players.length; i++){
+		var player = players[i];
+		playerSummary += '<tr><td>' + player + '</td><td>' + gametime(player) + '</td>';
+		for (j = 0; j < summaryEvents.length; j++){
+			var evt = summaryEvents[j];
+			playerSummary += '<td>';
+			if ( summary[evt] ){
+				if ( summary[evt][player] ){
+					playerSummary += summary[evt][player];
+				}
+			}
+			playerSummary += '</td>';
+		}
+		playerSummary += '</tr>';
+	}
+	playerSummary += '</table>';
+	document.getElementById('players').innerHTML = playerSummary;
+
 }
 
 function generateSummary(){
@@ -366,8 +282,9 @@ function generateSummary(){
 	summary = '<table>'
 		+ '<tr><td>Start time</td><td>' + startDatetime + '</td></tr>'
 		+ '<tr><td>End time</td><td>' + endDatetime + '</td></tr>'
-	    + 'Final playing: ' + playing.join(",") + '<br/>' +
-	    + 'Final subs: ' + subs.join(",");
+	    + '<tr><td>Final playing:</td><td>' + playing.join(",") + '<br/></td></tr>' +
+	    + '<tr><td>Final subs:</td><td>' + subs.join(",") + '</td></tr>'
+		+ ' </table>';
 	document.getElementById('summary').innerHTML = summary;			
 }
 
