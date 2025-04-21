@@ -161,6 +161,7 @@ for ( i = 0; i < summaryEvents.length; i++ ){
 }
 function triggerPlayerEvent() {
 	playerEvent(event.target.id, true);
+	document.getElementById('players-modal').style.display = 'block';
 }
 
 const extract = document.getElementById("export");
@@ -182,7 +183,7 @@ function format(events){
 }
 
 function playerEvent(evt, opposition){
-	var playerlist = [];
+	var playerlist = ['<h2>' + evt + '</h2>'];
 	for (i = 0; i < playing.length; i++){
 		var playerSummary = '';				
 		var player = playing[i];
@@ -194,19 +195,22 @@ function playerEvent(evt, opposition){
 		playerlist.push('<span class="w3-button active player" onclick="recordEvent(\'' + evt + '\');" id="' + player + '">' + player + playerSummary + '</span>');
 	}
 	if (opposition){ playerlist.push('<span class="w3-button active player" onclick="recordEvent(\'' + evt + '\');" id="opposition">opposition</span>') };
-	document.getElementById('playing').innerHTML = playerlist.join('<br/>');
+	document.getElementById('player-selection').innerHTML = playerlist.join('<br/>');
 }
 
 function recordEvent(name){
+	document.getElementById('players-modal').style.display = 'none';	
+	document.getElementById('subs-modal').style.display = 'none';	
 	var player = event.target.id;
 	if ( name == 'substituteoff' ){
 		
-		var subslist = [];
+		var subslist = ['<h2>Substitute On</h2>'];
 		for (i = 0; i < subs.length; i++){
 			var sub = subs[i];
 			subslist.push('<span class="w3-button active" onclick="recordEvent(\'substituteon\');" id="' + sub + '_' + player + '">' + sub + '</span>');
 		}
-		document.getElementById('subs').innerHTML = subslist.join('<br/>');
+		document.getElementById('sub-selection').innerHTML = subslist.join('<br/>');
+		document.getElementById('subs-modal').style.display = 'block';
 
 	} else if ( name == 'substituteon' ){
 		[playeron, playeroff] = event.target.id.split("_");
@@ -262,22 +266,27 @@ function updateGameSummary(){
 	playerSummary += '</tr>';
 	for (i = 0; i < players.length; i++){
 		var player = players[i];
-		playerSummary += '<tr><td>' + player + '</td><td>' + gametime(player) + '</td>';
-		for (j = 0; j < summaryEvents.length; j++){
-			var evt = summaryEvents[j];
-			playerSummary += '<td>';
-			if ( summary[evt] ){
-				if ( summary[evt][player] ){
-					playerSummary += summary[evt][player];
-				}
-			}
-			playerSummary += '</td>';
-		}
-		playerSummary += '</tr>';
+		playerSummary += updatePlayerSummary(player);
 	}
+	playerSummary += updatePlayerSummary('opposition');
 	playerSummary += '</table>';
 	document.getElementById('players').innerHTML = playerSummary;
+}
 
+function updatePlayerSummary(player){
+	var playerSummary = '<tr><td>' + player + '</td><td>' + gametime(player) + '</td>';
+	for (j = 0; j < summaryEvents.length; j++){
+		var evt = summaryEvents[j];
+		playerSummary += '<td>';
+		if ( summary[evt] ){
+			if ( summary[evt][player] ){
+				playerSummary += summary[evt][player];
+			}
+		}
+		playerSummary += '</td>';
+	}
+	playerSummary += '</tr>';
+	return(playerSummary);
 }
 
 function generateSummary(){
