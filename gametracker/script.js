@@ -156,8 +156,12 @@ function triggerNonPlayerEvent() {
 
 for ( i = 0; i < summaryEvents.length; i++ ){
 	var evt = summaryEvents[i];
-	var element = document.getElementById(evt);
-	element.addEventListener("click", triggerPlayerEvent);
+	if ( document.getElementById(evt) ){
+		var element = document.getElementById(evt);
+		element.addEventListener("click", triggerPlayerEvent);
+	} else {
+		alert('Couldnt find ' + evt);
+	}
 }
 function triggerPlayerEvent() {
 	playerEvent(event.target.id, true);
@@ -192,28 +196,27 @@ function playerEvent(evt, opposition){
 				playerSummary = '&nbsp;[' + summary[evt][player] + ']';
 			}
 		}
-		playerlist.push('<span class="w3-button active player" onclick="recordEvent(\'' + evt + '\');" id="' + player + '">' + player + playerSummary + '</span>');
+		playerlist.push('<span class="w3-button active player" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + player + playerSummary + '</span>');
 	}
-	if (opposition){ playerlist.push('<span class="w3-button active player" onclick="recordEvent(\'' + evt + '\');" id="opposition">opposition</span>') };
+	if (opposition){ playerlist.push('<span class="w3-button active player" onclick="recordEvent(\'' + evt + '\', \'opposition\');">Opposition</span>') };
 	document.getElementById('player-selection').innerHTML = playerlist.join('<br/>');
 }
 
-function recordEvent(name){
+function recordEvent(name, player){
 	document.getElementById('players-modal').style.display = 'none';	
 	document.getElementById('subs-modal').style.display = 'none';	
-	var player = event.target.id;
 	if ( name == 'substituteoff' ){
 		
 		var subslist = ['<h2>Substitute On</h2>'];
 		for (i = 0; i < subs.length; i++){
 			var sub = subs[i];
-			subslist.push('<span class="w3-button active" onclick="recordEvent(\'substituteon\');" id="' + sub + '_' + player + '">' + sub + '</span>');
+			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substituteon\', \'' + sub + '_' + player + '\');">' + sub + '</span>');
 		}
 		document.getElementById('sub-selection').innerHTML = subslist.join('<br/>');
 		document.getElementById('subs-modal').style.display = 'block';
 
 	} else if ( name == 'substituteon' ){
-		[playeron, playeroff] = event.target.id.split("_");
+		[playeron, playeroff] = player.split("_");
 		removePlayer(playing, playeroff);
 		addPlayer(subs, playeroff);
 		removePlayer(subs, playeron);
