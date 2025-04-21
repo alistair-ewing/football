@@ -193,7 +193,7 @@ function playerEvent(evt, opposition){
 		playerlist.push('<span class="button active" onclick="recordEvent(\'' + evt + '\');" id="' + player + '">' + player + playerSummary + '</span>');
 	}
 	if (opposition){ playerlist.push('<span class="button active" onclick="recordEvent(\'' + evt + '\');" id="opposition">opposition</span>') };
-	document.getElementById('playing').innerHTML = '<form class="button" name="' + evt + 's">' + playerlist.join('&nbsp;|&nbsp;') + '</form>';
+	document.getElementById('playing').innerHTML = playerlist.join('<br/>');
 }
 
 function recordEvent(name){
@@ -205,7 +205,7 @@ function recordEvent(name){
 			var sub = subs[i];
 			subslist.push('<span class="button active" onclick="recordEvent(\'substituteon\');" id="' + sub + '_' + player + '">' + sub + '</span>');
 		}
-		document.getElementById('subs').innerHTML = '<form name="' + event + 's">' + subslist.join('&nbsp;|&nbsp;') + '</form>';
+		document.getElementById('subs').innerHTML = subslist.join('<br/>');
 
 	} else if ( name == 'substituteon' ){
 		[playeron, playeroff] = event.target.id.split("_");
@@ -243,11 +243,11 @@ function updatePlayers(){
 		var sub = subs[i];
 		currentSubs.push( '<span class="button">' + sub + '</span>');
 	}
-	document.getElementById('playing').innerHTML = currentPlaying.join('<span class="button"> | </span>');
+	document.getElementById('playing').innerHTML = currentPlaying.join('<br/>');
 	if ( subs.length == 0 ){
 		document.getElementById('subs').innerHTML = 'No subs';
 	} else {
-		document.getElementById('subs').innerHTML = currentSubs.join('<span class="button"> | </span>');
+		document.getElementById('subs').innerHTML = currentSubs.join('<br/>');
 	}
 	
 	var playerSummary = "";

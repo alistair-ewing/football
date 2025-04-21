@@ -41,39 +41,61 @@
 	
 	<div id="game_section">
 		<table>
-		<tr><th>Playing</th><td>
-			<div id="playing"></div>
-		</td></tr>
-		<tr><th>Subs</th><td>
-			<div id="subs"></div>
-		</td></tr>
-		<tr><th>Passing</th><td>		
-			<span id="ourpass">Ours</span>
-			<span id="theirpass">Theirs</span>
-		</td></tr>
-		<tr><th>Goals</th><td>		
-			<span id="shot">Shot</span>
-			<span id="goal">Goal</span>
-			<span id="assist">Assist</span>
-			<span id="penalty">Penalty</span>
-			<span id="freekick">Freekick</span>
-		</td></tr>
-		<tr><th>Sides</th><td>
-			<span id="cornerOurs">Corner Ours</span>
-			<span id="cornerTheirs">Corner Theirs</span>
-			<span id="throwinOurs">Throw Ours</span>
-			<span id="throwinTheirs">Throw Theirs</span>
-		</td></tr>
-		<tr><th>Discipline</th><td>
-			<span id="yellowcard">Yellow</span>
-			<span id="redcard">Red</span>
-		</td></tr>
-		<tr><th>Coach</th><td>
-			<button id="substituteoff">Substitute</button>
-			<button id="endfirsthalf">End 1st</button>
-			<button id="startsecondhalf">Start 2nd</button>
-			<button id="endgame">Full time</button>
-		</td></tr>
+		<tr>
+			<th>Game</th>
+			<th>Playing</th>
+		</tr>
+		<tr>
+			<td>		
+				<span id="ourpass">Ours</span>
+				<span id="theirpass">Theirs</span>
+			</td>
+			<td rowspan="5">
+				<div id="playing"></div>
+			</td>
+		</tr>
+		<tr>
+		<tr>
+			<td>		
+				<span id="shot">Shot</span>
+				<span id="goal">Goal</span>
+				<span id="assist">Assist</span>
+				<span id="penalty">Penalty</span>
+				<span id="freekick">Freekick</span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span id="cornerOurs">Corner Ours</span>
+				<span id="cornerTheirs">Corner Theirs</span>
+				<span id="throwinOurs">Throw Ours</span>
+				<span id="throwinTheirs">Throw Theirs</span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span id="yellowcard">Yellow</span>
+				<span id="redcard">Red</span>
+			</td>
+		</tr>
+		<tr>
+			<th>Coach</th>			
+			<th>Subs</th>
+		</tr>
+		<tr>
+			<td>
+				<button id="substituteoff">Substitute</button>
+				<button id="endfirsthalf">End 1st</button>
+				<button id="startsecondhalf">Start 2nd</button>
+				<button id="endgame">Full time</button>
+			</td>
+			<td>
+				<div id="subs"></div>
+			</td>
+		</tr>
+		</table>
+		
+		<table>
 		<tr><th>Score</th><td>
 			<div id="score"></div>
 		</td></tr>
