@@ -190,9 +190,9 @@ function playerEvent(evt, opposition){
 				playerSummary = '&nbsp;[' + summary[evt][player] + ']';
 			}
 		}
-		playerlist.push('<span class="button active" onclick="recordEvent(\'' + evt + '\');" id="' + player + '">' + player + playerSummary + '</span>');
+		playerlist.push('<span class="w3-button active" onclick="recordEvent(\'' + evt + '\');" id="' + player + '">' + player + playerSummary + '</span>');
 	}
-	if (opposition){ playerlist.push('<span class="button active" onclick="recordEvent(\'' + evt + '\');" id="opposition">opposition</span>') };
+	if (opposition){ playerlist.push('<span class="w3-button active" onclick="recordEvent(\'' + evt + '\');" id="opposition">opposition</span>') };
 	document.getElementById('playing').innerHTML = playerlist.join('<br/>');
 }
 
@@ -203,7 +203,7 @@ function recordEvent(name){
 		var subslist = [];
 		for (i = 0; i < subs.length; i++){
 			var sub = subs[i];
-			subslist.push('<span class="button active" onclick="recordEvent(\'substituteon\');" id="' + sub + '_' + player + '">' + sub + '</span>');
+			subslist.push('<span class="w3-button active" onclick="recordEvent(\'substituteon\');" id="' + sub + '_' + player + '">' + sub + '</span>');
 		}
 		document.getElementById('subs').innerHTML = subslist.join('<br/>');
 
@@ -237,11 +237,11 @@ function updatePlayers(){
 	var currentSubs = [];
 	for (i = 0; i < playing.length; i++){
 		var player = playing[i];
-		currentPlaying.push( '<span class="button">' + player + '</span>');
+		currentPlaying.push( '<span class="w3-button w3-gray">' + player + '</span>');
 	}
 	for (i = 0; i < subs.length; i++){
 		var sub = subs[i];
-		currentSubs.push( '<span class="button">' + sub + '</span>');
+		currentSubs.push( '<span class="w3-button w3-light-gray">' + sub + '</span>');
 	}
 	document.getElementById('playing').innerHTML = currentPlaying.join('<br/>');
 	if ( subs.length == 0 ){

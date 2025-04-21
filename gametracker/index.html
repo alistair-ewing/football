@@ -24,14 +24,21 @@
 		.summary {
 			writing-mode: vertical-lr;
 		}
+		#subs {
+		    border: 1px solid gray;
+			border-collapse: collapse;
+			background-color: light-gray;
+		} 
 	</style>
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+
 </head>
 <body>
 
-	<div id="squad_section">
+	<div id="squad_section" class="w3-container">
 		<div id="squadlist"></div>
 		<div id="squadadvice"></div>
 
@@ -39,62 +46,57 @@
 	
 	</div>
 	
-	<div id="game_section">
+	<div id="game_section" class="w3-container">
 		<table>
 		<tr>
-			<th>Game</th>
-			<th>Playing</th>
-		</tr>
-		<tr>
 			<td>		
-				<span id="ourpass">Ours</span>
-				<span id="theirpass">Theirs</span>
+				<span class="w3-button w3-black" id="ourpass">Ours</span>
+				<span class="w3-button w3-black" id="theirpass">Theirs</span>
 			</td>
-			<td rowspan="5">
+			<td rowspan="6">
 				<div id="playing"></div>
-			</td>
-		</tr>
-		<tr>
-		<tr>
-			<td>		
-				<span id="shot">Shot</span>
-				<span id="goal">Goal</span>
-				<span id="assist">Assist</span>
-				<span id="penalty">Penalty</span>
-				<span id="freekick">Freekick</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span id="cornerOurs">Corner Ours</span>
-				<span id="cornerTheirs">Corner Theirs</span>
-				<span id="throwinOurs">Throw Ours</span>
-				<span id="throwinTheirs">Throw Theirs</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span id="yellowcard">Yellow</span>
-				<span id="redcard">Red</span>
-			</td>
-		</tr>
-		<tr>
-			<th>Coach</th>			
-			<th>Subs</th>
-		</tr>
-		<tr>
-			<td>
-				<button id="substituteoff">Substitute</button>
-				<button id="endfirsthalf">End 1st</button>
-				<button id="startsecondhalf">Start 2nd</button>
-				<button id="endgame">Full time</button>
-			</td>
-			<td>
 				<div id="subs"></div>
 			</td>
 		</tr>
+		<tr>
+		<tr>
+			<td>		
+				<span class="w3-button w3-black" id="shot">Shot</span>
+				<span class="w3-button w3-black" id="goal">Goal</span>
+				<span class="w3-button w3-black" id="assist">Assist</span>
+				<span class="w3-button w3-black" id="penalty">Penalty</span>
+				<span class="w3-button w3-black" id="freekick">Freekick</span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span class="w3-button w3-black" id="cornerOurs">Corner Ours</span>
+				<span class="w3-button w3-black" id="cornerTheirs">Corner Theirs</span>
+				<span class="w3-button w3-black w3-black" id="throwinOurs">Throw Ours</span>
+				<span class="w3-button w3-black" id="throwinTheirs">Throw Theirs</span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span class="w3-button w3-black" id="yellowcard">Yellow</span>
+				<span class="w3-button w3-black" id="redcard">Red</span>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<span class="w3-button w3-black" id="substituteoff">Substitute</span>
+				<span class="w3-button w3-black" id="endfirsthalf">End 1st</span>
+				<span class="w3-button w3-black" id="startsecondhalf">Start 2nd</span>
+				<span class="w3-button w3-black" id="endgame">Full time</span]>
+			</td>
+			<td>
+			</td>
+		</tr>
 		</table>
-		
+	</div>
+	
+	<div id="summary_section" class="w3-container">
+		<h2>Game</h2>
 		<table>
 		<tr><th>Score</th><td>
 			<div id="score"></div>
@@ -104,9 +106,6 @@
 		<tr><th>Players</th><td><div id="players"></div></td></tr>
 		</table>
 
-	</div>
-
-	<div id="summary_section">
 		<h2>Summary</h2>
 		<div id="summary"></div>
 		<button id="export" value="export">Export results</button>
