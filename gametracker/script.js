@@ -186,36 +186,42 @@ function format(events){
 	return(output);
 }
 
-function playerEvent(evt, opposition){
-	var playerlist = ['<h2>' + evt + '</h2>'];
-	for (i = 0; i < playing.length; i++){
-		var playerSummary = '';				
-		var player = playing[i];
-		if ( summary[evt] ){
-			if ( summary[evt][player] ){
-				playerSummary = '&nbsp;[' + summary[evt][player] + ']';
-			}
-		}
-		playerlist.push('<span class="w3-button active player" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + player + playerSummary + '</span>');
+function eventEvent(player){
+	var eventlist = ['<h2>' + player + '</h2>'];
+	for (i = 0; i < summaryEvents.length; i++){
+		var evt = summaryEvents[i];
+		var evtDescription = document.getElementById(evt).innerHTML;
+		eventlist.push('<span class="w3-button active event" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + evtDescription + '</span>');
 	}
-	if (opposition){ playerlist.push('<span class="w3-button active player" onclick="recordEvent(\'' + evt + '\', \'opposition\');">Opposition</span>') };
-	document.getElementById('player-selection').innerHTML = playerlist.join('<br/>');
+	document.getElementById('event-selection').innerHTML = eventlist.join('<br/>');
+	document.getElementById('events-modal').style.display = 'block';
 }
 
 function recordEvent(name, player){
 	document.getElementById('players-modal').style.display = 'none';	
 	document.getElementById('subs-modal').style.display = 'none';	
+	document.getElementById('events-modal').style.display = 'none';	
 	if ( name == 'substituteoff' ){
 		
 		var subslist = ['<h2>Substitute On</h2>'];
 		for (i = 0; i < subs.length; i++){
 			var sub = subs[i];
-			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substituteon\', \'' + sub + '_' + player + '\');">' + sub + '</span>');
+			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substitute\', \'' + sub + '_' + player + '\');">' + sub + '</span>');
 		}
 		document.getElementById('sub-selection').innerHTML = subslist.join('<br/>');
 		document.getElementById('subs-modal').style.display = 'block';
 
 	} else if ( name == 'substituteon' ){
+		
+		var subslist = ['<h2>Substitute Off</h2>'];
+		for (i = 0; i < playing.length; i++){
+			var sub = players[i];
+			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substitute\', \'' + player + '_' + sub + '\');">' + sub + '</span>');
+		}
+		document.getElementById('sub-selection').innerHTML = subslist.join('<br/>');
+		document.getElementById('subs-modal').style.display = 'block';
+
+	} else if ( name == 'substitute' ){
 		[playeron, playeroff] = player.split("_");
 		removePlayer(playing, playeroff);
 		addPlayer(subs, playeroff);
@@ -245,11 +251,11 @@ function updatePlayers(){
 	var currentSubs = [];
 	for (i = 0; i < playing.length; i++){
 		var player = playing[i];
-		currentPlaying.push( '<span class="w3-button w3-gray player">' + player + '</span>');
+		currentPlaying.push( '<span class="w3-button w3-gray player" id="' + player + '" onclick="eventEvent(\'' + player + '\');">' + player + '</span>');
 	}
 	for (i = 0; i < subs.length; i++){
 		var sub = subs[i];
-		currentSubs.push( '<span class="w3-button w3-light-gray player">' + sub + '</span>');
+		currentSubs.push( '<span class="w3-button w3-light-gray player" id="' + sub + '" onclick="recordEvent(\'substituteon\', \'' + sub + '\');">' + sub + '</span>');
 	}
 	document.getElementById('playing').innerHTML = currentPlaying.join('<br/>');
 	if ( subs.length == 0 ){
