@@ -33,7 +33,7 @@
 			width: 100%;
 			font-size: 0.5em;
 		}
-		.player {
+		.player, .event {
 			width: 100%;
 		}
 	</style>
@@ -84,6 +84,15 @@
 						</div>
 					</div>
 				</div>
+				<div id="events-modal" class="w3-modal w3-container">
+					<div class="w3-modal-content">
+						<div class="w3-container">
+							<span onclick="document.getElementById('events-modal').style.display='none'"
+								class="w3-button w3-display-topright">&times;</span>
+							<div id="event-selection"></div>
+						</div>
+					</div>
+				</div>			
 			</td>
 		</tr>
 		<tr>

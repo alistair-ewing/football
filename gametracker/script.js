@@ -186,6 +186,22 @@ function format(events){
 	return(output);
 }
 
+function playerEvent(evt, opposition){
+	var playerlist = ['<h2>' + evt + '</h2>'];
+	for (i = 0; i < playing.length; i++){
+		var playerSummary = '';				
+		var player = playing[i];
+		if ( summary[evt] ){
+			if ( summary[evt][player] ){
+				playerSummary = '&nbsp;[' + summary[evt][player] + ']';
+			}
+		}
+		playerlist.push('<span class="w3-button active player" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + player + playerSummary + '</span>');
+	}
+	document.getElementById('player-selection').innerHTML = playerlist.join('<br/>');
+	document.getElementById('players-modal').style.display = 'block';
+}
+
 function eventEvent(player){
 	var eventlist = ['<h2>' + player + '</h2>'];
 	for (i = 0; i < summaryEvents.length; i++){
