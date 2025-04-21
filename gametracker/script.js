@@ -15,8 +15,8 @@ var endDatetime = "";
 updateStartgame();
 updateScore();
 disabledToggle(['endfirsthalf','startsecondhalf','endgame']);
-document.getElementById('game_section').style.display = 'none';
-document.getElementById('summary_section').style.display = 'none';
+displayToggle(['game_section', 'gamesummary_section', 'summary_section']);
+
 
 // keep track of game time
 setInterval(updateGametime, timeAccuracy * 1000);
@@ -99,11 +99,12 @@ function startgameEvent() {
 		playing.push(player);
 	}
     addEvent("startgame", playing);
-	displayToggle(['squad_section', 'game_section']);
+	displayToggle(['squad_section', 'game_section', 'gamesummary_section']);
 	disabledToggle(['startgame','endfirsthalf']);
 	if ( subs.length == 0 ){ disabledToggle(['substitute'])}
 	updateHalf('firsthalf', startDatetime, '');
 	updatePlayers();
+	updateGameSummary();
 }
 
 const endgame = document.getElementById("endgame");
@@ -190,9 +191,9 @@ function playerEvent(evt, opposition){
 				playerSummary = '&nbsp;[' + summary[evt][player] + ']';
 			}
 		}
-		playerlist.push('<span class="w3-button active" onclick="recordEvent(\'' + evt + '\');" id="' + player + '">' + player + playerSummary + '</span>');
+		playerlist.push('<span class="w3-button active player" onclick="recordEvent(\'' + evt + '\');" id="' + player + '">' + player + playerSummary + '</span>');
 	}
-	if (opposition){ playerlist.push('<span class="w3-button active" onclick="recordEvent(\'' + evt + '\');" id="opposition">opposition</span>') };
+	if (opposition){ playerlist.push('<span class="w3-button active player" onclick="recordEvent(\'' + evt + '\');" id="opposition">opposition</span>') };
 	document.getElementById('playing').innerHTML = playerlist.join('<br/>');
 }
 
@@ -217,8 +218,8 @@ function recordEvent(name){
 		updatePlayers();
 	} else {
 		addEvent(name, [player]);
-		updatePlayers();
-		if ( name == 'scorer' ){
+		updateGameSummary();
+		if ( name == 'goal' ){
 			updateScore();
 		}
 	}
@@ -237,11 +238,11 @@ function updatePlayers(){
 	var currentSubs = [];
 	for (i = 0; i < playing.length; i++){
 		var player = playing[i];
-		currentPlaying.push( '<span class="w3-button w3-gray">' + player + '</span>');
+		currentPlaying.push( '<span class="w3-button w3-gray player">' + player + '</span>');
 	}
 	for (i = 0; i < subs.length; i++){
 		var sub = subs[i];
-		currentSubs.push( '<span class="w3-button w3-light-gray">' + sub + '</span>');
+		currentSubs.push( '<span class="w3-button w3-light-gray player">' + sub + '</span>');
 	}
 	document.getElementById('playing').innerHTML = currentPlaying.join('<br/>');
 	if ( subs.length == 0 ){
@@ -249,9 +250,11 @@ function updatePlayers(){
 	} else {
 		document.getElementById('subs').innerHTML = currentSubs.join('<br/>');
 	}
-	
+}
+
+function updateGameSummary(){
 	var playerSummary = "";
-	playerSummary = '<table><tr><td>Name</td><td class="summary">Game time</td>';
+	playerSummary = '<table id="players"><tr><td>Name</td><td class="summary">Game time</td>';
 	for (j = 0; j < summaryEvents.length; j++){
 		var evt = summaryEvents[j];
 		playerSummary += '<td class="summary">' + evt + '</td>';
@@ -315,29 +318,41 @@ function datetime(){
 
 function displayToggle(divArray) {
 	for (i = 0; i < divArray.length; i++){
-		var element = document.getElementById(divArray[i]);
-		if (element.style.display === "none") {
-			element.style.display = "block";
+		if ( document.getElementById(divArray[i]) ){
+			var element = document.getElementById(divArray[i]);
+			if (element.style.display === "none") {
+				element.style.display = "block";
+			} else {
+				element.style.display = "none";
+			}			
 		} else {
-			element.style.display = "none";
+			alert('Couldnt find ' + divArray[i]);
 		}
 	}
 }
 
 function displayOnOff(divOn, divOff) {
-	var elementOn = document.getElementById(divOn);
-	elementOn.style.display = "block";
-	var elementOff = document.getElementById(divOff);
-	elementOff.style.display = "block";
+	if ( document.getElementById(divOn) && document.getElementById(divOff) ){
+		var elementOn = document.getElementById(divOn);
+		elementOn.style.display = "block";
+		var elementOff = document.getElementById(divOff);
+		elementOff.style.display = "block";
+	} else {
+		alert('Couldnt find ' + divOn + ' or ' + divOff);
+	}
 }
 
 function disabledToggle(divArray) {
 	for (i = 0; i < divArray.length; i++){
-		var element = document.getElementById(divArray[i]);
-		if (element.disabled === true) {
-			element.disabled = false;
+		if ( document.getElementById(divArray[i]) ){
+			var element = document.getElementById(divArray[i]);
+			if (element.disabled === true) {
+				element.disabled = false;
+			} else {
+				element.disabled = true;
+			}
 		} else {
-			element.disabled = true;
+			alert('Couldnt find ' + divArray[i]);
 		}
 	}
 }
@@ -358,7 +373,7 @@ function updateGametime(){
 			}
 		}
 	}
-	updatePlayers();
+	updateGameSummary();
 }
 
 function gametime(player){

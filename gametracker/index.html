@@ -29,6 +29,12 @@
 			border-collapse: collapse;
 			background-color: light-gray;
 		} 
+		#players {
+			width: 100%;
+		}
+		.player {
+			width: 100%;
+		}
 	</style>
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -95,17 +101,26 @@
 		</table>
 	</div>
 	
-	<div id="summary_section" class="w3-container">
+	<div id="gamesummary_section" class="w3-container">
 		<h2>Game</h2>
 		<table>
-		<tr><th>Score</th><td>
-			<div id="score"></div>
-		</td></tr>
-		<tr><th>First Half</th><td><div id="firsthalf"></div></td></tr>
-		<tr><th>Second Half</th><td><div id="secondhalf"></div></td></tr>
-		<tr><th>Players</th><td><div id="players"></div></td></tr>
+			<tr>
+				<th>Score</th>
+				<td><div id="score"></div></td>
+			</tr>
+			<tr>
+				<th>First Half</th>
+				<td><div id="firsthalf"></div></td>
+			</tr>
+			<tr>
+				<th>Second Half</th>
+				<td><div id="secondhalf"></div></td>
+			</tr>
 		</table>
+		<div id="players"></div>
+	</div>
 
+	<div id="summary_section" class="w3-container">
 		<h2>Summary</h2>
 		<div id="summary"></div>
 		<button id="export" value="export">Export results</button>
