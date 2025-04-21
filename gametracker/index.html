@@ -31,6 +31,7 @@
 		} 
 		#players {
 			width: 100%;
+			font-size: 0.5em;
 		}
 		.player {
 			width: 100%;
@@ -56,10 +57,13 @@
 		<table>
 		<tr>
 			<td>		
-				<span class="w3-button w3-black" id="ourpass">Ours</span>
-				<span class="w3-button w3-black" id="theirpass">Theirs</span>
+				<span class="w3-button w3-black" id="passComplete">Pass Complete</span>
+				<span class="w3-button w3-black" id="passIntercepted">Pass Intercepted</span>
+				<span class="w3-button w3-black" id="passMissed">Pass Missed</span>
+				<span class="w3-button w3-black" id="passPlayingOn">Pass PlayingOn</span>
+				<span class="w3-button w3-black" id="passHolding">Pass Holding</span>
 			</td>
-			<td rowspan="6">
+			<td rowspan="7">
 				<div id="playing"></div>
 				<div id="subs"></div>
 				<div id="players-modal" class="w3-modal w3-container">
@@ -85,7 +89,14 @@
 		<tr>
 		<tr>
 			<td>		
-				<span class="w3-button w3-black" id="shot">Shot</span>
+				<span class="w3-button w3-black" id="tackleComplete">Tackle Complete</span>
+				<span class="w3-button w3-black" id="tackleMissed">Tackle Missed</span>
+			</td>
+		</tr>
+		<tr>
+			<td>		
+				<span class="w3-button w3-black" id="shotOnTarget">Shot On Target</span>
+				<span class="w3-button w3-black" id="shotMissed">Shot Missed</span>
 				<span class="w3-button w3-black" id="goal">Goal</span>
 				<span class="w3-button w3-black" id="assist">Assist</span>
 				<span class="w3-button w3-black" id="penalty">Penalty</span>

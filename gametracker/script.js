@@ -4,8 +4,8 @@ var playing = [];
 var subs = [];
 var events = [];
 var summary = [];
-var summaryEvents = ['shot', 'goal', 'assist', 'penalty','yellowcard', 'redcard', 'substituteoff'];
-var nonplayerEvents = ['ourpass', 'theirpass', 'freekick', 'cornerOurs', 'cornerTheirs', 'throwinOurs', 'throwinTheirs'];
+var summaryEvents = ['passComplete', 'passIntercepted', 'passMissed', 'passPlayingOn', 'passHolding', 'shotOnTarget', 'shotMissed', 'tackleComplete', 'tackleMissed', 'goal', 'assist', 'penalty','yellowcard', 'redcard', 'substituteoff'];
+var nonplayerEvents = ['freekick', 'cornerOurs', 'cornerTheirs', 'throwinOurs', 'throwinTheirs'];
 var timeAccuracy = 30; 
 
 var startDatetime = "";
