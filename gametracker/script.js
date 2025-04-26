@@ -17,8 +17,7 @@ var endDatetime = "";
 updateStartgame();
 updateScore();
 disabledToggle(['endfirsthalf','startsecondhalf','endgame']);
-displayToggle(['game_section', 'gamesummary_section', 'summary_section']);
-
+openTab(event,'squad_section');
 
 // keep track of game time
 setInterval(updateGametime, timeAccuracy * 1000);
@@ -101,7 +100,9 @@ function startgameEvent() {
 		playing.push(player);
 	}
     addEvent("startgame", playing);
-	displayToggle(['squad_section', 'game_section', 'gamesummary_section']);
+	document.getElementById('game_section_tab').disabled = '';
+	document.getElementById('summary_section_tab').disabled = '';
+	openTab(event,'game_section');
 	disabledToggle(['startgame','endfirsthalf']);
 	if ( subs.length == 0 ){ disabledToggle(['substitute'])}
 	updateHalf('firsthalf', startDatetime, '');
@@ -116,6 +117,7 @@ function endGameEvent() {
     addEvent("endGame", playing);
 	displayToggle(['summary_section']);
 	disabledToggle(['endgame']);
+	openTab(event,'summary_section');
 	updateHalf('secondhalf', endDatetime, ' to ');
 	generateSummary();
 }
@@ -483,4 +485,18 @@ function updateScore(){
 		ourScorers = [];
 	}
 	document.getElementById('score').innerHTML = ourScore + '-' + theirScore + ' (' + ourScorers.join(',') + ' )';
+}
+
+function openTab(evt, section) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName('section');
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = 'none';
+  }
+  tablinks = document.getElementsByClassName('tablink');
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(' w3-red', '');
+  }
+  document.getElementById(section).style.display = 'block';
+  document.getElementById(section + '_tab').className += ' w3-red';
 }

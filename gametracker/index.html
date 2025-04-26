@@ -17,10 +17,10 @@
 		.player, .event, .opposition {
 			width: 100%;
 		}
-		#game_section, #gamesummary_section {
+		#game_section, #summary_section, #playing {
 			font-size: 8px;
 		} 
-		#game-events, .event, .player, .opposition {
+		#game-events, .event, .player, .opposition, .tablink {
 		  font-size: 6px;
 		}
 	</style>
@@ -32,7 +32,13 @@
 </head>
 <body>
 
-	<div id="squad_section" class="w3-container">
+	<div class="w3-bar w3-black">
+		<button id="squad_section_tab" class="w3-bar-item w3-button tablink w3-red" onclick="openTab(event,'squad_section')">Squad</button>
+		<button id="game_section_tab" class="w3-bar-item w3-button tablink"  onclick="openTab(event,'game_section')" disabled>Game</button>
+		<button id="summary_section_tab" class="w3-bar-item w3-button tablink" onclick="openTab(event,'summary_section')" disabled>Summary</button>
+	</div>
+ 
+	<div id="squad_section" class="w3-container section">
 		<div id="squadlist"></div>
 		<div id="squadadvice"></div>
 
@@ -40,21 +46,21 @@
 	
 	</div>
 	
-	<div id="game_section">
+	<div id="game_section" class="section">
 		<div class="w3-container">
 			<div class="w3-col s8" id="game-events">
-				<div class="">
+				<div class="w3-container">
 					<span class="w3-button w3-black" id="passComplete">Pass Complete</span>
 					<span class="w3-button w3-black" id="passIntercepted">Pass Intercepted</span>
 					<span class="w3-button w3-black" id="passMissed">Pass Missed</span>
 					<span class="w3-button w3-black" id="passPlayingOn">Pass PlayingOn</span>
 					<span class="w3-button w3-black" id="passHolding">Pass Holding</span>
 				</div>
-				<div class="">
+				<div class="w3-container">
 					<span class="w3-button w3-black" id="tackleComplete">Tackle Complete</span>
 					<span class="w3-button w3-black" id="tackleMissed">Tackle Missed</span>
 				</div>
-				<div class="">
+				<div class="w3-container">
 					<span class="w3-button w3-black" id="shotOnTarget">Shot On Target</span>
 					<span class="w3-button w3-black" id="shotMissed">Shot Missed</span>
 					<span class="w3-button w3-black" id="goal">Goal</span>
@@ -62,17 +68,17 @@
 					<span class="w3-button w3-black" id="penalty">Penalty</span>
 					<span class="w3-button w3-black" id="freekick">Freekick</span>
 				</div>
-				<div class="">
+				<div class="w3-container">
 					<span class="w3-button w3-black" id="cornerOurs">Corner Ours</span>
 					<span class="w3-button w3-black" id="cornerTheirs">Corner Theirs</span>
 					<span class="w3-button w3-black" id="throwinOurs">Throw Ours</span>
 					<span class="w3-button w3-black" id="throwinTheirs">Throw Theirs</span>
 				</div>
-				<div class="">
+				<div class="w3-container">
 					<span class="w3-button w3-black" id="yellowcard">Yellow</span>
 					<span class="w3-button w3-black" id="redcard">Red</span>
 				</div>
-				<div class="">
+				<div class="w3-container">
 					<span class="w3-button w3-black" id="substituteoff">Substitute</span>
 					<span class="w3-button w3-black" id="endfirsthalf">End 1st</span>
 					<span class="w3-button w3-black" id="startsecondhalf">Start 2nd</span>
@@ -90,8 +96,7 @@
 		</div>
 	</div>
 	
-	<div id="gamesummary_section">
-		<h2>Game</h2>
+	<div id="summary_section" class="section">
 		<table>
 			<tr>
 				<th>Score</th>
@@ -106,13 +111,11 @@
 				<td><div id="secondhalf"></div></td>
 			</tr>
 		</table>
-	</div>
-
-	<div id="summary_section" class="w3-container">
-		<h2>Summary</h2>
-		<div id="players"></div>
-		<div id="summary"></div>
+		
 		<button id="export" value="export">Export results</button>
+
+		<div class="w3-container" id="players"></div>
+
 	</div>
 	
     <script src="script.js"></script>
