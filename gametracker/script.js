@@ -14,8 +14,6 @@ var startDatetime = "";
 var endDatetime = "";
 
 // start game button disabled till starting 11 selected
-updateStartgame();
-updateScore();
 disabledToggle(['endfirsthalf','startsecondhalf','endgame']);
 openTab(event,'squad_section');
 
@@ -26,8 +24,8 @@ setInterval(updateGametime, timeAccuracy * 1000);
 var squadlist = '<table><tr><td>Player</td><td>Playing</td><td>Sub</td></tr>';
 for (i = 0; i < squad.length; i++){
 	var player = squad[i];
-	squadlist += '<tr><td>' + player + '</td><td><input type="checkbox" name="playing" value="' + player + '" id="player_' + player + '" checked/></td>'
-	 + '<td><input type="checkbox" name="sub" value="' + player + '" id="sub_' + player + '"/></td></tr>'
+	squadlist += '<tr><td>' + player + '</td><td class="s3"><button class="w3-button w3-green" id="player_' + player + '" onclick="switchValue(\'player_' + player + '\', \'Playing\', \'Not Playing\', \'green\', \'red\');">Playing</button></td>'
+	 + '<td class="s3"><button class="w3-button w3-blue" id="sub_' + player + '" onclick="switchValue(\'sub_' + player + '\', \'Starting\', \'Sub\', \'blue\', \'light-blue\');">Starting</button></td></tr>'
 	
 }
 squadlist += '<tr><td>TOTAL</td><td><div id="totalplaying"/>' + players.length + '</td><td><div id="totalsubs"/>' + subs.length + '</td></tr></table>';
@@ -35,37 +33,53 @@ if (document.getElementById('squadlist')) {
     document.getElementById('squadlist').innerHTML = squadlist;
 }
 
-// Select all playing checkboxes with the name 'playing' using querySelectorAll.
-var playingCheckboxes = document.querySelectorAll('input[type="checkbox"][name="playing"]');
-playingCheckboxes.forEach(function(checkbox) {
-	checkbox.addEventListener('change', function() {
-		players = 
-			Array.from(playingCheckboxes) // Convert checkboxes to an array to use filter and map.
-			.filter(i => i.checked) // Use Array.filter to remove unchecked checkboxes.
-			.map(i => i.value) // Use Array.map to extract only the checkbox values from the array of objects.
-      
-	document.getElementById('totalplaying').innerHTML = players.length;	
-	updateStartgame();
-	updatesubs();
-			
-	})
-});
+function switchValue(player, from, to, from_colour, to_colour){
+	if ( document.getElementById(player) ){
 
-// Select all subs checkboxes with the name 'sub' using querySelectorAll.
-var subsCheckboxes = document.querySelectorAll('input[type="checkbox"][name="sub"]');
-subsCheckboxes.forEach(function(checkbox) {
-	checkbox.addEventListener('change', function() {
-		subs = 
-			Array.from(subsCheckboxes) // Convert checkboxes to an array to use filter and map.
-			.filter(i => i.checked) // Use Array.filter to remove unchecked checkboxes.
-			.map(i => i.value) // Use Array.map to extract only the checkbox values from the array of objects.
-     
-		updateStartgame();
-		document.getElementById('totalsubs').innerHTML = subs.length;			
-	})
-});
+		var element = document.getElementById(player);
+		
+		if ( element.innerHTML == from ){
+			element.innerHTML = to;
+		} else {
+			element.innerHTML = from;
+		}
+	
+		if ( element.className.indexOf(from_colour) > -1 ){
+			element.className = element.className.replace(from_colour, to_colour);
+		} else {
+			element.className = element.className.replace(to_colour, from_colour);			
+		}
+	
+	} else {
+		alert('couldnt find ' + type + ', ' + player);
+	}
+	updateStartgame();
+}
 
 function updateStartgame(){
+	players = [];
+	subs = [];
+	for ( i = 0; i < squad.length; i++ ){
+		var player = squad[i];
+		if ( document.getElementById('player_' + player) ){
+			if ( document.getElementById('player_' + player).innerHTML == 'Playing' ){
+				players.push(player);
+			}
+		} else {
+			alert('Couldnt find: player_' + player);
+		}
+		if ( document.getElementById('sub_' + player) ){
+			if ( document.getElementById('sub_' + player).innerHTML == 'Sub' ){
+				subs.push(player);
+			}
+		} else {
+			alert('Couldnt find: aub_' + player);
+		}
+	}
+
+	document.getElementById('totalplaying').innerHTML = players.length;	
+	document.getElementById('totalsubs').innerHTML = subs.length;			
+
 	var advice = document.getElementById('squadadvice'); 
 	if ( players.length - subs.length == 11 ) { 
 		advice.innerHTML = 'Got 11 playing';
@@ -82,7 +96,7 @@ function updateStartgame(){
 
 function updatesubs(){
 	for ( i = 0; i < squad.length; i++){
-		if ( document.getElementById('player_' + squad[i]).checked ){
+		if ( document.getElementById('player_' + squad[i]).innerHTML == 'Playing' ){
 			document.getElementById('sub_' + squad[i]).disabled = '';
 		} else {
 			document.getElementById('sub_' + squad[i]).disabled = 'disabled';		
