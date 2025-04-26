@@ -3,23 +3,8 @@
 <head>
     <title>Game Tracker</title>
 	<style>
-		span.button {
-			font-size: 2vw;
-		}
 		span.active {
 			background-color: yellow;
-		}
-		input[type="checkbox"] {
-			width: 5vw;
-			height: 5vw;
-		}
-		button {
-			font-size: 2vw;
-		}
-		table, th, td {
-			border: 1px solid black;
-			border-collapse: collapse;
-			padding: 2px 2px 2px 2px;
 		}
 		.summary {
 			writing-mode: vertical-lr;
@@ -34,6 +19,12 @@
 		}
 		.player, .event {
 			width: 100%;
+		}
+		#game_section, #gamesummary_section {
+			font-size: 8px;
+		} 
+		#game-events, .event, .player {
+		  font-size: 6px;
 		}
 	</style>
 	
@@ -52,20 +43,49 @@
 	
 	</div>
 	
-	<div id="game_section" class="w3-container">
-		<table>
-		<tr>
-			<td>		
-				<span class="w3-button w3-black" id="passComplete">Pass Complete</span>
-				<span class="w3-button w3-black" id="passIntercepted">Pass Intercepted</span>
-				<span class="w3-button w3-black" id="passMissed">Pass Missed</span>
-				<span class="w3-button w3-black" id="passPlayingOn">Pass PlayingOn</span>
-				<span class="w3-button w3-black" id="passHolding">Pass Holding</span>
-			</td>
-			<td rowspan="7">
+	<div id="game_section">
+		<div class="w3-container">
+			<div class="w3-col s8" id="game-events">
+				<div class="">
+					<span class="w3-button w3-black" id="passComplete">Pass Complete</span>
+					<span class="w3-button w3-black" id="passIntercepted">Pass Intercepted</span>
+					<span class="w3-button w3-black" id="passMissed">Pass Missed</span>
+					<span class="w3-button w3-black" id="passPlayingOn">Pass PlayingOn</span>
+					<span class="w3-button w3-black" id="passHolding">Pass Holding</span>
+				</div>
+				<div class="">
+					<span class="w3-button w3-black" id="tackleComplete">Tackle Complete</span>
+					<span class="w3-button w3-black" id="tackleMissed">Tackle Missed</span>
+				</div>
+				<div class="">
+					<span class="w3-button w3-black" id="shotOnTarget">Shot On Target</span>
+					<span class="w3-button w3-black" id="shotMissed">Shot Missed</span>
+					<span class="w3-button w3-black" id="goal">Goal</span>
+					<span class="w3-button w3-black" id="assist">Assist</span>
+					<span class="w3-button w3-black" id="penalty">Penalty</span>
+					<span class="w3-button w3-black" id="freekick">Freekick</span>
+				</div>
+				<div class="">
+					<span class="w3-button w3-black" id="cornerOurs">Corner Ours</span>
+					<span class="w3-button w3-black" id="cornerTheirs">Corner Theirs</span>
+					<span class="w3-button w3-black" id="throwinOurs">Throw Ours</span>
+					<span class="w3-button w3-black" id="throwinTheirs">Throw Theirs</span>
+				</div>
+				<div class="">
+					<span class="w3-button w3-black" id="yellowcard">Yellow</span>
+					<span class="w3-button w3-black" id="redcard">Red</span>
+				</div>
+				<div class="">
+					<span class="w3-button w3-black" id="substituteoff">Substitute</span>
+					<span class="w3-button w3-black" id="endfirsthalf">End 1st</span>
+					<span class="w3-button w3-black" id="startsecondhalf">Start 2nd</span>
+					<span class="w3-button w3-black" id="endgame">Full time</span]>
+				</div>
+			</div>
+			<div class="w3-col s4">
 				<div id="playing"></div>
 				<div id="subs"></div>
-				<div id="players-modal" class="w3-modal w3-container">
+				<div id="players-modal" class="w3-modal">
 					<div class="w3-modal-content">
 						<div class="w3-container">
 							<span onclick="document.getElementById('players-modal').style.display='none'"
@@ -92,53 +112,11 @@
 						</div>
 					</div>
 				</div>			
-			</td>
-		</tr>
-		<tr>
-		<tr>
-			<td>		
-				<span class="w3-button w3-black" id="tackleComplete">Tackle Complete</span>
-				<span class="w3-button w3-black" id="tackleMissed">Tackle Missed</span>
-			</td>
-		</tr>
-		<tr>
-			<td>		
-				<span class="w3-button w3-black" id="shotOnTarget">Shot On Target</span>
-				<span class="w3-button w3-black" id="shotMissed">Shot Missed</span>
-				<span class="w3-button w3-black" id="goal">Goal</span>
-				<span class="w3-button w3-black" id="assist">Assist</span>
-				<span class="w3-button w3-black" id="penalty">Penalty</span>
-				<span class="w3-button w3-black" id="freekick">Freekick</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span class="w3-button w3-black" id="cornerOurs">Corner Ours</span>
-				<span class="w3-button w3-black" id="cornerTheirs">Corner Theirs</span>
-				<span class="w3-button w3-black w3-black" id="throwinOurs">Throw Ours</span>
-				<span class="w3-button w3-black" id="throwinTheirs">Throw Theirs</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span class="w3-button w3-black" id="yellowcard">Yellow</span>
-				<span class="w3-button w3-black" id="redcard">Red</span>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<span class="w3-button w3-black" id="substituteoff">Substitute</span>
-				<span class="w3-button w3-black" id="endfirsthalf">End 1st</span>
-				<span class="w3-button w3-black" id="startsecondhalf">Start 2nd</span>
-				<span class="w3-button w3-black" id="endgame">Full time</span]>
-			</td>
-			<td>
-			</td>
-		</tr>
-		</table>
+			</div>
+		</div>
 	</div>
 	
-	<div id="gamesummary_section" class="w3-container">
+	<div id="gamesummary_section">
 		<h2>Game</h2>
 		<table>
 			<tr>

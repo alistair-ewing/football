@@ -188,7 +188,7 @@ function format(events){
 }
 
 function playerEvent(evt, opposition){
-	var playerlist = ['<h3>' + evt + '</h3>'];
+	var playerlist = ['<div class="w3-center w3-container">' + evt + '</div>'];
 	for (i = 0; i < playing.length; i++){
 		var playerSummary = '';				
 		var player = playing[i];
@@ -204,7 +204,7 @@ function playerEvent(evt, opposition){
 }
 
 function eventEvent(player){
-	var eventlist = ['<h3>' + player + '</h3>'];
+	var eventlist = ['<div class="w3-center w3-container">' + player + '</div>'];
 	for (i = 0; i < playerEvents.length; i++){
 		var evt = playerEvents[i];
 		var evtDescription = document.getElementById(evt).innerHTML;
@@ -220,7 +220,7 @@ function recordEvent(name, player){
 	document.getElementById('events-modal').style.display = 'none';	
 	if ( name == 'substituteoff' ){
 		
-		var subslist = ['<h3>Substitute On</h3>'];
+		var subslist = ['<div class="w3-center w3-container">Substitute On</div>'];
 		for (i = 0; i < subs.length; i++){
 			var sub = subs[i];
 			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substitute\', \'' + sub + '_' + player + '\');">' + sub + '</span>');
@@ -230,7 +230,7 @@ function recordEvent(name, player){
 
 	} else if ( name == 'substituteon' ){
 		
-		var subslist = ['<h3>Substitute Off</h3>'];
+		var subslist = ['<div class="w3-center w3-container">Substitute Off</div>'];
 		for (i = 0; i < playing.length; i++){
 			var sub = players[i];
 			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substitute\', \'' + player + '_' + sub + '\');">' + sub + '</span>');
