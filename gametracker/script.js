@@ -207,7 +207,7 @@ function playerEvent(evt, opposition){
 }
 
 function updatePlayerEvent(player, evt){
-	return('<span class="w3-button w3-green player" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + player + getPlayerSummary(player, evt) + '</span>');
+	return('<span class="w3-button ' + ( player == oppositionLabel ? 'w3-green opposition' : 'w3-light-green player' ) + '" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + player + getPlayerSummary(player, evt) + '</span>');
 }
 
 function getPlayerSummary(player, evt){
