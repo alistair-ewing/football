@@ -199,7 +199,14 @@ function playerEvent(evt, opposition){
 		}
 		playerlist.push('<span class="w3-button active player" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + player + playerSummary + '</span>');
 	}
-	document.getElementById('player-selection').innerHTML = playerlist.join('<br/>');
+	document.getElementById('players-modal').innerHTML = 
+		'<div class="w3-modal-content">' + 
+		'	<div class="w3-container">' +
+		'		<span onclick="document.getElementById(\'players-modal\').style.display=\'none\'"' +
+		'			class="w3-button w3-display-topright">&times;</span>' +
+		'		<div id="player-selection">' + playerlist.join('<br/>') + '</div>' + 
+		'	</div>' +
+		'</div>';
 	document.getElementById('players-modal').style.display = 'block';
 }
 
@@ -210,7 +217,14 @@ function eventEvent(player){
 		var evtDescription = document.getElementById(evt).innerHTML;
 		eventlist.push('<span class="w3-button active event" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + evtDescription + '</span>');
 	}
-	document.getElementById('event-selection').innerHTML = eventlist.join('<br/>');
+	document.getElementById('events-modal').innerHTML = 
+					'<div class="w3-modal-content">' +
+					'	<div class="w3-container">' +
+					'		<span onclick="document.getElementById(\'events-modal\').style.display=\'none\'"' +
+					'			class="w3-button w3-display-topright">&times;</span>' +
+					'		<div id="event-selection">' + eventlist.join('<br/>') + '</div>' +
+					'	</div>' +
+					'</div>';;
 	document.getElementById('events-modal').style.display = 'block';
 }
 
@@ -235,7 +249,14 @@ function recordEvent(name, player){
 			var sub = players[i];
 			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substitute\', \'' + player + '_' + sub + '\');">' + sub + '</span>');
 		}
-		document.getElementById('sub-selection').innerHTML = subslist.join('<br/>');
+		document.getElementById('subs-modal').innerHTML = 
+					'<div class="w3-modal-content">' +
+					'	<div class="w3-container">' +
+					'		<span onclick="document.getElementById(\'subs-modal\').style.display=\'none\'"' +
+					'			class="w3-button w3-display-topright">&times;</span>' +
+					'		<div id="sub-selection">' + subslist.join('<br/>') + '</div>' +
+					'	</div>' +
+					'</div>';
 		document.getElementById('subs-modal').style.display = 'block';
 
 	} else if ( name == 'substitute' ){
