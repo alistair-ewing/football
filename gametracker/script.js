@@ -196,7 +196,7 @@ function playerEvent(evt, opposition){
 		var player = playing[i];
 		playerlist.push(updatePlayerEvent(player, evt));
 	}
-	playerlist.push(updatePlayerEvent(oppositionLabel, evt));
+	if ( evt != 'substituteoff' ) { playerlist.push(updatePlayerEvent(oppositionLabel, evt)); }
 	document.getElementById('players-modal').innerHTML = 
 		'<div class="w3-modal-content">' + 
 		'	<div class="w3-container">' +
