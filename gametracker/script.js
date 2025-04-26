@@ -4,7 +4,8 @@ var playing = [];
 var subs = [];
 var events = [];
 var summary = [];
-var summaryEvents = ['passComplete', 'passIntercepted', 'passMissed', 'passPlayingOn', 'passHolding', 'shotOnTarget', 'shotMissed', 'tackleComplete', 'tackleMissed', 'goal', 'assist', 'penalty','yellowcard', 'redcard', 'substituteoff'];
+var playerEvents = ['passComplete', 'passIntercepted', 'passMissed', 'passPlayingOn', 'passHolding', 'shotOnTarget', 'shotMissed', 'tackleComplete', 'tackleMissed', 'goal', 'assist', 'penalty','yellowcard', 'redcard', 'substituteoff'];
+var summaryEvents = ['shotOnTarget', 'shotMissed', 'goal', 'assist'];
 var nonplayerEvents = ['freekick', 'cornerOurs', 'cornerTheirs', 'throwinOurs', 'throwinTheirs'];
 var timeAccuracy = 30; 
 
@@ -154,8 +155,8 @@ function triggerNonPlayerEvent() {
 	addEvent(event.target.id, []);
 }
 
-for ( i = 0; i < summaryEvents.length; i++ ){
-	var evt = summaryEvents[i];
+for ( i = 0; i < playerEvents.length; i++ ){
+	var evt = playerEvents[i];
 	if ( document.getElementById(evt) ){
 		var element = document.getElementById(evt);
 		element.addEventListener("click", triggerPlayerEvent);
@@ -187,7 +188,7 @@ function format(events){
 }
 
 function playerEvent(evt, opposition){
-	var playerlist = ['<h2>' + evt + '</h2>'];
+	var playerlist = ['<h3>' + evt + '</h3>'];
 	for (i = 0; i < playing.length; i++){
 		var playerSummary = '';				
 		var player = playing[i];
@@ -203,9 +204,9 @@ function playerEvent(evt, opposition){
 }
 
 function eventEvent(player){
-	var eventlist = ['<h2>' + player + '</h2>'];
-	for (i = 0; i < summaryEvents.length; i++){
-		var evt = summaryEvents[i];
+	var eventlist = ['<h3>' + player + '</h3>'];
+	for (i = 0; i < playerEvents.length; i++){
+		var evt = playerEvents[i];
 		var evtDescription = document.getElementById(evt).innerHTML;
 		eventlist.push('<span class="w3-button active event" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + evtDescription + '</span>');
 	}
@@ -219,7 +220,7 @@ function recordEvent(name, player){
 	document.getElementById('events-modal').style.display = 'none';	
 	if ( name == 'substituteoff' ){
 		
-		var subslist = ['<h2>Substitute On</h2>'];
+		var subslist = ['<h3>Substitute On</h3>'];
 		for (i = 0; i < subs.length; i++){
 			var sub = subs[i];
 			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substitute\', \'' + sub + '_' + player + '\');">' + sub + '</span>');
@@ -229,7 +230,7 @@ function recordEvent(name, player){
 
 	} else if ( name == 'substituteon' ){
 		
-		var subslist = ['<h2>Substitute Off</h2>'];
+		var subslist = ['<h3>Substitute Off</h3>'];
 		for (i = 0; i < playing.length; i++){
 			var sub = players[i];
 			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substitute\', \'' + player + '_' + sub + '\');">' + sub + '</span>');
@@ -329,7 +330,7 @@ function addEvent(event, data){
 	var mydatetime = datetime();
 	events.push([mydatetime, event, data]);
 	var firstPlayer = data[0];
-	if ( summaryEvents.indexOf(event) > -1 ){
+	if ( playerEvents.indexOf(event) > -1 ){
 		if ( summary[event] ){
 			if ( summary[event][firstPlayer] ){
 				summary[event][firstPlayer] ++;
