@@ -257,17 +257,24 @@ function recordEvent(name, player){
 	document.getElementById('events-modal').style.display = 'none';	
 	if ( name == 'substituteoff' ){
 		
-		var subslist = ['<div class="w3-center w3-container">Substitute On</div>'];
+		var subslist = ['<div class="w3-center w3-container">Substitute On: ' + player + '</div>'];
 		for (i = 0; i < subs.length; i++){
 			var sub = subs[i];
 			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substitute\', \'' + sub + '_' + player + '\');">' + sub + '</span>');
 		}
-		document.getElementById('sub-selection').innerHTML = subslist.join('<br/>');
+		document.getElementById('subs-modal').innerHTML =
+					'<div class="w3-modal-content">' +
+					'	<div class="w3-container">' +
+					'		<span onclick="document.getElementById(\'subs-modal\').style.display=\'none\'"' +
+					'			class="w3-button w3-display-topright">&times;</span>' +
+					'		<div id="sub-selection">' + subslist.join('<br/>') + '</div>' +
+					'	</div>' +
+					'</div>';
 		document.getElementById('subs-modal').style.display = 'block';
 
 	} else if ( name == 'substituteon' ){
 		
-		var subslist = ['<div class="w3-center w3-container">Substitute Off</div>'];
+		var subslist = ['<div class="w3-center w3-container">Substitute Off: ' + player + '</div>'];
 		for (i = 0; i < playing.length; i++){
 			var sub = players[i];
 			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substitute\', \'' + player + '_' + sub + '\');">' + sub + '</span>');
