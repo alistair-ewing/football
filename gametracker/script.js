@@ -4,9 +4,16 @@ var playing = [];
 var subs = [];
 var events = [];
 var summary = [];
-var playerEvents = ['passComplete', 'passIntercepted', 'passMissed', 'passPlayingOn', 'passHolding', 'shotOnTarget', 'shotMissed', 'tackleComplete', 'tackleMissed', 'goal', 'assist', 'penalty','yellowcard', 'redcard', 'substituteoff'];
+var playerEvents = [
+	[ 'passing', 'w3-sand', [ 'passComplete', 'passIntercepted', 'passMissed', 'passPlayingOn', 'passHolding'] ], 
+	[ 'tackling', 'w3-khaki', [ 'tackleComplete', 'tackleMissed' ] ],
+	[ 'shooting', 'w3-yellow', [ 'shotOnTarget', 'shotMissed', 'goal', 'assist', 'penalty' ] ], 
+	[ 'discipline', 'w3-deep-orange', [ 'substituteoff', 'yellowcard', 'redcard' ] ],
+	];
+var nonplayerEvents = [ [ 'nonplayer', 'w3-amber', [ 'freekick', 'corner', 'throwin' ] ] ];
+var nonplayerTypes = [ 'Ours', 'Theirs' ];
+var gameEvents = [ [ 'game', 'w3-red', [ 'endfirsthalf', 'startsecondhalf', 'endgame' ] ] ];
 var summaryEvents = ['shotOnTarget', 'shotMissed', 'goal', 'assist'];
-var nonplayerEvents = ['freekick', 'cornerOurs', 'cornerTheirs', 'throwinOurs', 'throwinTheirs'];
 var timeAccuracy = 30; 
 var oppositionLabel = 'Opposition';
 
@@ -14,23 +21,25 @@ var startDatetime = "";
 var endDatetime = "";
 
 // start game button disabled till starting 11 selected
-disabledToggle(['endfirsthalf','startsecondhalf','endgame']);
-openTab(event,'squad_section');
-
 // keep track of game time
 setInterval(updateGametime, timeAccuracy * 1000);
+displaySquad();
+openTab(event,'squad_section');
 
-// seelect the players and subs from the squad 
-var squadlist = '<table><tr><td>Player</td><td>Playing</td><td>Sub</td></tr>';
-for (i = 0; i < squad.length; i++){
-	var player = squad[i];
-	squadlist += '<tr><td>' + player + '</td><td class="s3"><button class="w3-button w3-green" id="player_' + player + '" onclick="switchValue(\'player_' + player + '\', \'Playing\', \'Not Playing\', \'green\', \'red\');">Playing</button></td>'
-	 + '<td class="s3"><button class="w3-button w3-blue" id="sub_' + player + '" onclick="switchValue(\'sub_' + player + '\', \'Starting\', \'Sub\', \'blue\', \'light-blue\');">Starting</button></td></tr>'
+function displaySquad(){
+	// seelect the players and subs from the squad 
+	var squadlist = '<table><tr><td>Player</td><td>Playing</td><td>Sub</td></tr>';
+	for (i = 0; i < squad.length; i++){
+		var player = squad[i];
+		squadlist += '<tr><td>' + player + '</td><td class="s3"><button class="w3-button w3-green" id="player_' + player + '" onclick="switchValue(\'player_' + player + '\', \'Playing\', \'Not Playing\', \'green\', \'red\');">Playing</button></td>'
+		+ '<td class="s3"><button class="w3-button w3-blue" id="sub_' + player + '" onclick="switchValue(\'sub_' + player + '\', \'Starting\', \'Sub\', \'blue\', \'light-blue\');">Starting</button></td></tr>'
 	
-}
-squadlist += '<tr><td>TOTAL</td><td><div id="totalplaying"/>' + players.length + '</td><td><div id="totalsubs"/>' + subs.length + '</td></tr></table>';
-if (document.getElementById('squadlist')) {
-    document.getElementById('squadlist').innerHTML = squadlist;
+	}
+	squadlist += '<tr><td>TOTAL</td><td><div id="totalplaying"/>' + players.length + '</td><td><div id="totalsubs"/>' + subs.length + '</td></tr></table>';
+	if (document.getElementById('squadlist')) {
+		document.getElementById('squadlist').innerHTML = squadlist;
+	}
+	
 }
 
 function switchValue(player, from, to, from_colour, to_colour){
@@ -53,10 +62,10 @@ function switchValue(player, from, to, from_colour, to_colour){
 	} else {
 		alert('couldnt find ' + type + ', ' + player);
 	}
-	updateStartgame();
+	updateSquad();
 }
 
-function updateStartgame(){
+function updateSquad(){
 	players = [];
 	subs = [];
 	for ( i = 0; i < squad.length; i++ ){
@@ -94,96 +103,49 @@ function updateStartgame(){
 	}	
 }
 
-function updatesubs(){
-	for ( i = 0; i < squad.length; i++){
-		if ( document.getElementById('player_' + squad[i]).innerHTML == 'Playing' ){
-			document.getElementById('sub_' + squad[i]).disabled = '';
-		} else {
-			document.getElementById('sub_' + squad[i]).disabled = 'disabled';		
+function gameEvent(event){
+	if ( event == 'startgame' ){
+		startDatetime = datetime();
+		for (i = 0; i < players.length; i++){
+			var player = players[i];
+			if ( subs.indexOf(player) > -1 ){ continue; }
+			playing.push(player);
 		}
+		addEvent("startgame", playing);
+		document.getElementById('game_section_tab').disabled = '';
+		document.getElementById('summary_section_tab').disabled = '';
+		displayEvents();
+		displayGameSummary();
+		openTab(event,'game_section');
+		disabledToggle(['startgame','endfirsthalf','startsecondhalf','endgame']);
+		if ( subs.length == 0 ){ disabledToggle(['substitute'])}
+		updateHalf('firsthalf', startDatetime, '');
+		updatePlayers();
+		updateScore();
+		updatePlayersSummary();
+	} else if ( event == 'endgame' ){
+		endDatetime = datetime();
+		addEvent("endGame", playing);
+		displayToggle(['summary_section']);
+		disabledToggle(['endgame']);
+		openTab(event,'summary_section');
+		updateHalf('secondhalf', endDatetime, ' to ');
+	} else if ( event == 'endfirsthalf' ){
+		endDatetime = datetime();
+		addEvent("endfirsthalf", playing);
+		disabledToggle(['startsecondhalf','endfirsthalf']);
+		updateHalf('firsthalf', endDatetime, ' to ');
+	} else if ( event == 'startsecondhalf' ){
+		endDatetime = datetime();
+		addEvent("startsecondhalf", playing);
+		disabledToggle(['startsecondhalf','endgame']);
+		updateHalf('secondhalf', endDatetime, '');		
 	}
-}
-
-const startgame = document.getElementById("startgame");
-startgame.addEventListener("click", startgameEvent);
-function startgameEvent() {
-	startDatetime = datetime();
-	for (i = 0; i < players.length; i++){
-		var player = players[i];
-		if ( subs.indexOf(player) > -1 ){ continue; }
-		playing.push(player);
-	}
-    addEvent("startgame", playing);
-	document.getElementById('game_section_tab').disabled = '';
-	document.getElementById('summary_section_tab').disabled = '';
-	openTab(event,'game_section');
-	disabledToggle(['startgame','endfirsthalf']);
-	if ( subs.length == 0 ){ disabledToggle(['substitute'])}
-	updateHalf('firsthalf', startDatetime, '');
-	updatePlayers();
-	updateGameSummary();
-}
-
-const endgame = document.getElementById("endgame");
-endgame.addEventListener("click", endGameEvent);
-function endGameEvent() {
-	endDatetime = datetime();
-    addEvent("endGame", playing);
-	displayToggle(['summary_section']);
-	disabledToggle(['endgame']);
-	openTab(event,'summary_section');
-	updateHalf('secondhalf', endDatetime, ' to ');
-	generateSummary();
-}
-
-const endfirsthalf = document.getElementById("endfirsthalf");
-endfirsthalf.addEventListener("click", endfirsthalfEvent);
-function endfirsthalfEvent() {
-	endDatetime = datetime();
-    addEvent("endfirsthalf", playing);
-	disabledToggle(['startsecondhalf','endfirsthalf']);
-	updateHalf('firsthalf', endDatetime, ' to ');
-}
-
-const startsecondhalf = document.getElementById("startsecondhalf");
-startsecondhalf.addEventListener("click", startsecondhalfEvent);
-function startsecondhalfEvent() {
-	endDatetime = datetime();
-    addEvent("startsecondhalf", playing);
-	disabledToggle(['startsecondhalf','endgame']);
-	updateHalf('secondhalf', endDatetime, '');
 }
 
 function updateHalf(half, datetime, append){
 	var time = datetime.substring(datetime.indexOf('T') + 1, datetime.indexOf('.'));
 	document.getElementById(half).innerHTML += append + time;					
-}
-
-for ( i = 0; i < nonplayerEvents.length; i++ ){
-	var evt = nonplayerEvents[i];
-	if ( document.getElementById(evt) ){
-		var element = document.getElementById(evt);
-		element.addEventListener("click", triggerNonPlayerEvent);	
-	} else {
-		alert('Couldnt find ' + evt);
-	}
-}
-function triggerNonPlayerEvent() {
-	addEvent(event.target.id, []);
-}
-
-for ( i = 0; i < playerEvents.length; i++ ){
-	var evt = playerEvents[i];
-	if ( document.getElementById(evt) ){
-		var element = document.getElementById(evt);
-		element.addEventListener("click", triggerPlayerEvent);
-	} else {
-		alert('Couldnt find ' + evt);
-	}
-}
-function triggerPlayerEvent() {
-	playerEvent(event.target.id, true);
-	document.getElementById('players-modal').style.display = 'block';
 }
 
 const extract = document.getElementById("export");
@@ -202,6 +164,51 @@ function format(events){
 		output += events[i][0] + ',' + events[i][1] + ',[' + events[i][2].join(',') + ']%0A';
 	}
 	return(output);
+}
+
+function displayEvents(){
+	
+	var allEvents =  '';
+	for ( i = 0; i < playerEvents.length; i++ ){
+		var eventClass = playerEvents[i][0];
+		var eventColour = playerEvents[i][1];
+		var eventDetails = playerEvents[i][2];
+		allEvents += '<div class="w3-container ' + eventColour + '" id="' + eventClass + '">';
+		  for ( j = 0; j < eventDetails.length; j++ ){
+			  var thisEvent = eventDetails[j];
+			  allEvents += '<span class="w3-button w3-black" id="' + thisEvent + '"' +
+			  ' onclick="playerEvent(\'' + thisEvent + '\', true);">' + thisEvent + '</span>';
+		  }
+		allEvents += '</div>';
+	}
+	for ( i = 0; i < nonplayerEvents.length; i++ ){
+		var eventClass = nonplayerEvents[i][0];
+		var eventColour = nonplayerEvents[i][1];
+		var eventDetails = nonplayerEvents[i][2];
+		allEvents += '<div class="w3-container ' + eventColour + '" id="' + eventClass + '">';
+		  for ( j = 0; j < eventDetails.length; j++ ){
+			  for ( k = 0; k < nonplayerTypes.length; k ++ ){
+				  var thisEvent = eventDetails[j] +  nonplayerTypes[k];
+				  allEvents += '<span class="w3-button w3-black" id="' + thisEvent + '"' + 
+					' onclick="addEvent(\'' + thisEvent + '\', []);">' + thisEvent + '</span>';				  
+			  }
+		  }
+		allEvents += '</div>';
+	}
+	for ( i = 0; i < gameEvents.length; i++ ){
+		var eventClass = gameEvents[i][0];
+		var eventColour = gameEvents[i][1];
+		var eventDetails = gameEvents[i][2];
+		allEvents += '<div class="w3-container ' + eventColour + '" id="' + eventClass + '">';
+		  for ( j = 0; j < eventDetails.length; j++ ){
+			  var thisEvent = eventDetails[j];
+			  allEvents += '<span class="w3-button w3-black" id="' + thisEvent + '"' +
+			  ' onclick="gameEvent(\'' + thisEvent + '\');">' + thisEvent + '</span>';
+		  }
+		allEvents += '</div>';
+	}
+	document.getElementById('game-events').innerHTML = allEvents;
+
 }
 
 function playerEvent(evt, opposition){
@@ -239,8 +246,12 @@ function getPlayerSummary(player, evt){
 function eventEvent(player){
 	var eventlist = ['<div class="w3-center w3-container">' + player + '</div>'];
 	for (i = 0; i < playerEvents.length; i++){
-		var evt = playerEvents[i];
-		eventlist.push(updateEventEvent(player, evt));
+		var eventColour = playerEvents[i][1];
+		var eventDetails = playerEvents[i][2];
+		for ( j = 0; j < eventDetails.length; j ++ ){
+			var evt = eventDetails[j];
+			eventlist.push(updateEventEvent(player, evt, eventColour));
+		}
 	}
 	document.getElementById('events-modal').innerHTML = 
 					'<div class="w3-modal-content">' +
@@ -253,11 +264,11 @@ function eventEvent(player){
 	document.getElementById('events-modal').style.display = 'block';
 }
 
-function updateEventEvent(player, evt){
+function updateEventEvent(player, evt, colour){
 		if ( document.getElementById(evt) ){
 			var evtDescription = document.getElementById(evt).innerHTML;
 			return(
-				'<span class="w3-button ' + ( player == oppositionLabel ? 'w3-blue opposition' : 'w3-indigo player' ) + 
+				'<span class="w3-button player ' + colour + 
 				'" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + 
 				evtDescription + getPlayerSummary(player, evt) + '</span>');
 		} else {
@@ -313,7 +324,7 @@ function recordEvent(name, player){
 		updatePlayers();
 	} else {
 		addEvent(name, [player]);
-		updateGameSummary();
+		updatePlayersSummary();
 		if ( name == 'goal' ){
 			updateScore();
 		}
@@ -352,7 +363,25 @@ function displayPlayer(player){
 	return('<span class="w3-button ' + ( player == oppositionLabel ? 'w3-blue opposition' : 'w3-indigo player' ) + '" id="' + player + '" onclick="eventEvent(\'' + player + '\');">' + player + '</span>');
 }
 
-function updateGameSummary(){
+function displayGameSummary(){
+	document.getElementById('gameSummary').innerHTML = 
+		'<table>' +
+		'	<tr>' +
+		'		<th>Score</th>' +
+		'		<td><div id="score"></div></td>' +
+		'	</tr>' +
+		'	<tr>' +
+		'		<th>First Half</th>' +
+		'		<td><div id="firsthalf"></div></td>' +
+		'	</tr>' +
+		'	<tr>' +
+		'		<th>Second Half</th>' +
+		'		<td><div id="secondhalf"></div></td>' +
+		'	</tr>' + 
+		'</table>';
+}
+
+function updatePlayersSummary(){
 	var playerSummary = "";
 	playerSummary = '<table id="players"><tr><td>Name</td><td class="summary">Game time</td>';
 	for (j = 0; j < summaryEvents.length; j++){
@@ -379,31 +408,24 @@ function updatePlayerSummary(player){
 	return(playerSummary);
 }
 
-function generateSummary(){
-	var summary = '';
-	summary = '<table>'
-		+ '<tr><td>Start time</td><td>' + startDatetime + '</td></tr>'
-		+ '<tr><td>End time</td><td>' + endDatetime + '</td></tr>'
-	    + '<tr><td>Final playing:</td><td>' + playing.join(",") + '<br/></td></tr>' +
-	    + '<tr><td>Final subs:</td><td>' + subs.join(",") + '</td></tr>'
-		+ ' </table>';
-	document.getElementById('summary').innerHTML = summary;			
-}
-
 function addEvent(event, data){
 	var mydatetime = datetime();
 	events.push([mydatetime, event, data]);
+	
 	var firstPlayer = data[0];
-	if ( playerEvents.indexOf(event) > -1 ){
-		if ( summary[event] ){
-			if ( summary[event][firstPlayer] ){
-				summary[event][firstPlayer] ++;
+	for ( i = 0; i < playerEvents.length; i++ ){
+		var eventDetails = playerEvents[i][2];
+		if ( eventDetails.indexOf(event) > -1 ){
+			if ( summary[event] ){
+				if ( summary[event][firstPlayer] ){
+					summary[event][firstPlayer] ++;
+				} else {
+					summary[event][firstPlayer] = 1;		
+				}
 			} else {
+				summary[event] = [];
 				summary[event][firstPlayer] = 1;		
 			}
-		} else {
-			summary[event] = [];
-			summary[event][firstPlayer] = 1;		
 		}
 	}
 	
@@ -472,7 +494,7 @@ function updateGametime(){
 			}
 		}
 	}
-	updateGameSummary();
+	updatePlayersSummary();
 }
 
 function gametime(player){
