@@ -223,7 +223,7 @@ function playerEvent(evt, opposition){
 }
 
 function updatePlayerEvent(player, evt){
-	return('<span class="w3-button ' + ( player == oppositionLabel ? 'w3-green opposition' : 'w3-light-green player' ) + '" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + player + getPlayerSummary(player, evt) + '</span>');
+	return('<span class="w3-button ' + ( player == oppositionLabel ? 'w3-blue opposition' : 'w3-indigo player' ) + '" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + player + getPlayerSummary(player, evt) + '</span>');
 }
 
 function getPlayerSummary(player, evt){
@@ -257,7 +257,7 @@ function updateEventEvent(player, evt){
 		if ( document.getElementById(evt) ){
 			var evtDescription = document.getElementById(evt).innerHTML;
 			return(
-				'<span class="w3-button ' + ( player == oppositionLabel ? 'w3-blue opposition' : 'w3-light-blue player' ) + 
+				'<span class="w3-button ' + ( player == oppositionLabel ? 'w3-blue opposition' : 'w3-indigo player' ) + 
 				'" onclick="recordEvent(\'' + evt + '\', \'' + player + '\');">' + 
 				evtDescription + getPlayerSummary(player, evt) + '</span>');
 		} else {
@@ -338,7 +338,7 @@ function updatePlayers(){
 	currentPlaying.push( displayPlayer(oppositionLabel) );
 	for (i = 0; i < subs.length; i++){
 		var sub = subs[i];
-		currentSubs.push( '<span class="w3-button w3-light-gray player" id="' + sub + '" onclick="recordEvent(\'substituteon\', \'' + sub + '\');">' + sub + '</span>');
+		currentSubs.push( '<span class="w3-button w3-light-blue player" id="' + sub + '" onclick="recordEvent(\'substituteon\', \'' + sub + '\');">' + sub + '</span>');
 	}
 	document.getElementById('playing').innerHTML = currentPlaying.join('<br/>');
 	if ( subs.length == 0 ){
@@ -349,7 +349,7 @@ function updatePlayers(){
 }
 
 function displayPlayer(player){
-	return('<span class="w3-button ' + ( player == oppositionLabel ? 'w3-dark-gray opposition' : 'w3-gray player' ) + '" id="' + player + '" onclick="eventEvent(\'' + player + '\');">' + player + '</span>');
+	return('<span class="w3-button ' + ( player == oppositionLabel ? 'w3-blue opposition' : 'w3-indigo player' ) + '" id="' + player + '" onclick="eventEvent(\'' + player + '\');">' + player + '</span>');
 }
 
 function updateGameSummary(){
