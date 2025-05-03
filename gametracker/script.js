@@ -24,7 +24,7 @@ var endDatetime = "";
 // keep track of game time
 setInterval(updateGametime, timeAccuracy * 1000);
 displaySquad();
-openTab(event,'squad_section');
+openTab('squad_section');
 
 function displaySquad(){
 	// seelect the players and subs from the squad 
@@ -92,14 +92,14 @@ function updateSquad(){
 	var advice = document.getElementById('squadadvice'); 
 	if ( players.length - subs.length == 11 ) { 
 		advice.innerHTML = 'Got 11 playing';
-		document.getElementById('startgame').disabled = false; 
+		enable(['startgame']); 
 	} else {
 		if ( players.length - subs.length > 11 ) {
 			advice.innerHTML = 'Remove players or pick more subs to get 11 playing';
 		} else {
 			advice.innerHTML = 'Add players or remove subs to get 11 playing';			
 		}
-		document.getElementById('startgame').disabled = true; 		
+		disable(['startgame']); 		
 	}	
 }
 
@@ -116,9 +116,10 @@ function gameEvent(event){
 		document.getElementById('summary_section_tab').disabled = '';
 		displayEvents();
 		displayGameSummary();
-		openTab(event,'game_section');
-		disabledToggle(['startgame','endfirsthalf','startsecondhalf','endgame']);
-		if ( subs.length == 0 ){ disabledToggle(['substitute'])}
+		openTab('game_section');
+		show(['endfirsthalf']);
+		hide(['startsecondhalf','endgame']);
+		if ( subs.length == 0 ){ disable(['substitute'])}
 		updateHalf('firsthalf', startDatetime, '');
 		updatePlayers();
 		updateScore();
@@ -126,19 +127,21 @@ function gameEvent(event){
 	} else if ( event == 'endgame' ){
 		endDatetime = datetime();
 		addEvent("endGame", playing);
-		displayToggle(['summary_section']);
-		disabledToggle(['endgame']);
-		openTab(event,'summary_section');
+		show(['summary_section']);
+		hide(['endgame']);
+		openTab('summary_section');
 		updateHalf('secondhalf', endDatetime, ' to ');
 	} else if ( event == 'endfirsthalf' ){
 		endDatetime = datetime();
 		addEvent("endfirsthalf", playing);
-		disabledToggle(['startsecondhalf','endfirsthalf']);
+		hide(['endfirsthalf']);
+		show(['startsecondhalf']);
 		updateHalf('firsthalf', endDatetime, ' to ');
 	} else if ( event == 'startsecondhalf' ){
 		endDatetime = datetime();
 		addEvent("startsecondhalf", playing);
-		disabledToggle(['startsecondhalf','endgame']);
+		hide(['startsecondhalf']);
+		show(['endgame']);
 		updateHalf('secondhalf', endDatetime, '');		
 	}
 }
@@ -226,7 +229,7 @@ function playerEvent(evt, opposition){
 		'		<div id="player-selection">' + playerlist.join('<br/>') + '</div>' + 
 		'	</div>' +
 		'</div>';
-	document.getElementById('players-modal').style.display = 'block';
+	show(['players-modal']);
 }
 
 function updatePlayerEvent(player, evt){
@@ -261,7 +264,7 @@ function eventEvent(player){
 					'		<div id="event-selection">' + eventlist.join('<br/>') + '</div>' +
 					'	</div>' +
 					'</div>';;
-	document.getElementById('events-modal').style.display = 'block';
+	show(['events-modal']);
 }
 
 function updateEventEvent(player, evt, colour){
@@ -277,9 +280,7 @@ function updateEventEvent(player, evt, colour){
 }
 
 function recordEvent(name, player){
-	document.getElementById('players-modal').style.display = 'none';	
-	document.getElementById('subs-modal').style.display = 'none';	
-	document.getElementById('events-modal').style.display = 'none';	
+	hide([ 'players-modal', 'subs-modal', 'events-modal' ]);	
 	if ( name == 'substituteoff' ){
 		
 		var subslist = ['<div class="w3-center w3-container">Substitute On: ' + player + '</div>'];
@@ -295,7 +296,7 @@ function recordEvent(name, player){
 					'		<div id="sub-selection">' + subslist.join('<br/>') + '</div>' +
 					'	</div>' +
 					'</div>';
-		document.getElementById('subs-modal').style.display = 'block';
+		show(['subs-modal']);
 
 	} else if ( name == 'substituteon' ){
 		
@@ -312,7 +313,7 @@ function recordEvent(name, player){
 					'		<div id="sub-selection">' + subslist.join('<br/>') + '</div>' +
 					'	</div>' +
 					'</div>';
-		document.getElementById('subs-modal').style.display = 'block';
+		show(['subs-modal']);
 
 	} else if ( name == 'substitute' ){
 		[playeron, playeroff] = player.split("_");
@@ -437,45 +438,48 @@ function datetime(){
 	return(d.toISOString());	
 }
 
-function displayToggle(divArray) {
+function disable(divArray) {
 	for (i = 0; i < divArray.length; i++){
 		if ( document.getElementById(divArray[i]) ){
 			var element = document.getElementById(divArray[i]);
-			if (element.style.display === "none") {
-				element.style.display = "block";
-			} else {
-				element.style.display = "none";
-			}			
+			element.disabled = true;
 		} else {
 			alert('Couldnt find ' + divArray[i]);
 		}
 	}
 }
 
-function displayOnOff(divOn, divOff) {
-	if ( document.getElementById(divOn) && document.getElementById(divOff) ){
-		var elementOn = document.getElementById(divOn);
-		elementOn.style.display = "block";
-		var elementOff = document.getElementById(divOff);
-		elementOff.style.display = "block";
-	} else {
-		alert('Couldnt find ' + divOn + ' or ' + divOff);
-	}
-}
-
-function disabledToggle(divArray) {
+function enable(divArray) {
 	for (i = 0; i < divArray.length; i++){
 		if ( document.getElementById(divArray[i]) ){
 			var element = document.getElementById(divArray[i]);
-			if (element.disabled === true) {
-				element.disabled = false;
-			} else {
-				element.disabled = true;
-			}
+			element.disabled = false;
 		} else {
 			alert('Couldnt find ' + divArray[i]);
 		}
 	}
+}
+
+function hide(divArray){
+	for (i = 0; i < divArray.length; i++){
+		if ( document.getElementById(divArray[i]) ){
+			var element = document.getElementById(divArray[i]);
+			element.style.display = 'none';
+		} else {
+			alert('Couldnt find ' + divArray[i]);
+		}
+	}	
+}
+
+function show(divArray){
+	for (i = 0; i < divArray.length; i++){
+		if ( document.getElementById(divArray[i]) ){
+			var element = document.getElementById(divArray[i]);
+			element.style.display = 'block';
+		} else {
+			alert('Couldnt find ' + divArray[i]);
+		}
+	}	
 }
 
 function updateGametime(){
@@ -530,16 +534,20 @@ function updateScore(){
 	document.getElementById('score').innerHTML = ourScore + '-' + theirScore + ' (' + ourScorers.join(',') + ' )';
 }
 
-function openTab(evt, section) {
-  var i, x, tablinks;
-  x = document.getElementsByClassName('section');
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = 'none';
-  }
-  tablinks = document.getElementsByClassName('tablink');
-  for (i = 0; i < x.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(' w3-red', '');
-  }
-  document.getElementById(section).style.display = 'block';
-  document.getElementById(section + '_tab').className += ' w3-red';
+function openTab(section) {
+	var i, x, tablinks;
+	x = document.getElementsByClassName('section');
+	
+	for ( i = 0; i < x.length; i++ ){
+		x[i].style.display = 'none';
+	}
+	
+	tablinks = document.getElementsByClassName('tablink');
+	
+	for (i = 0; i < x.length; i++ ) {
+		tablinks[i].className = tablinks[i].className.replace(' w3-red', '');
+	}
+	
+	document.getElementById(section).style.display = 'block';
+	document.getElementById(section + '_tab').className += ' w3-red';
 }
