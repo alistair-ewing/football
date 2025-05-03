@@ -14,7 +14,8 @@ var nonplayerEvents = [ [ 'nonplayer', 'w3-amber', [ 'freekick', 'corner', 'thro
 var nonplayerTypes = [ 'Ours', 'Theirs' ];
 var gameEvents = [ [ 'game', 'w3-red', [ 'startgame', 'endfirsthalf', 'startsecondhalf', 'endgame' ] ] ];
 var summaryEvents = ['shotOnTarget', 'shotMissed', 'goal', 'assist'];
-var timeAccuracy = 30; 
+var timeAccuracySeconds = 60; 
+var halfDurationMinutes = 35;
 var oppositionLabel = 'Opposition';
 
 var startDatetime = "";
@@ -22,7 +23,7 @@ var endDatetime = "";
 
 // start game button disabled till starting 11 selected
 // keep track of game time
-setInterval(updateGametime, timeAccuracy * 1000);
+setInterval(updateGametime, timeAccuracySeconds * 1000);
 displaySquad();
 openTab('squad_section');
 
@@ -39,7 +40,7 @@ function displaySquad(){
 	if (document.getElementById('squadlist')) {
 		document.getElementById('squadlist').innerHTML = squadlist;
 	}
-	
+	updateSquad();
 }
 
 function switchValue(player, from, to, from_colour, to_colour){
@@ -92,14 +93,14 @@ function updateSquad(){
 	var advice = document.getElementById('squadadvice'); 
 	if ( players.length - subs.length == 11 ) { 
 		advice.innerHTML = 'Got 11 playing';
-		enable(['startgame']); 
+		enable(['kickoff']); 
 	} else {
 		if ( players.length - subs.length > 11 ) {
 			advice.innerHTML = 'Remove players or pick more subs to get 11 playing';
 		} else {
 			advice.innerHTML = 'Add players or remove subs to get 11 playing';			
 		}
-		disable(['startgame']); 		
+		disable(['kickoff']); 		
 	}	
 }
 
@@ -111,44 +112,85 @@ function gameEvent(event){
 			if ( subs.indexOf(player) > -1 ){ continue; }
 			playing.push(player);
 		}
-		addEvent("startgame", playing);
-		document.getElementById('game_section_tab').disabled = '';
-		document.getElementById('summary_section_tab').disabled = '';
+		addEvent(event, playing);
+		enable(['game_section_tab']);
+		enable(['summary_section_tab']);
 		displayEvents();
 		displayGameSummary();
 		openTab('game_section');
+		disable(['kickoff']);
 		show(['endfirsthalf']);
-		hide(['startgame', 'startsecondhalf','endgame']);
+		hide(['startgame','startsecondhalf','endgame']);
 		if ( subs.length == 0 ){ disable(['substitute'])}
-		updateHalf('firsthalf', startDatetime, '');
+		updateHalf(startDatetime);
 		updatePlayers();
 		updateScore();
 		updatePlayersSummary();
 	} else if ( event == 'endgame' ){
 		endDatetime = datetime();
-		addEvent("endGame", playing);
+		addEvent(event, playing);
 		show(['summary_section']);
 		hide(['endgame']);
 		openTab('summary_section');
-		updateHalf('secondhalf', endDatetime, ' to ');
+		updateHalf(endDatetime);
 	} else if ( event == 'endfirsthalf' ){
 		endDatetime = datetime();
-		addEvent("endfirsthalf", playing);
+		addEvent(event, playing);
 		hide(['endfirsthalf']);
 		show(['startsecondhalf']);
-		updateHalf('firsthalf', endDatetime, ' to ');
+		updateHalf(endDatetime);
 	} else if ( event == 'startsecondhalf' ){
 		endDatetime = datetime();
-		addEvent("startsecondhalf", playing);
+		addEvent(event, playing);
 		hide(['startsecondhalf']);
 		show(['endgame']);
-		updateHalf('secondhalf', endDatetime, '');		
+		updateHalf(endDatetime);		
 	}
 }
 
-function updateHalf(half, datetime, append){
-	var time = datetime.substring(datetime.indexOf('T') + 1, datetime.indexOf('.'));
-	document.getElementById(half).innerHTML += append + time;					
+function updateHalf(datetime){
+	var time = timeOnly(datetime);
+
+	if ( summary['startgame'] ){
+		var startgame = summary['startgame'];
+		if ( ! summary['endfirsthalf'] ){
+			document.getElementById('firsthalf').innerHTML = 'From: ' + timeOnly( startgame ) + ' Remaining: ' + minutesRemaining(startgame, datetime) + ' minutes';					
+		} else {
+			var endfirsthalf = summary['endfirsthalf'];
+			document.getElementById('firsthalf').innerHTML = 'From: ' + timeOnly( startgame ) + ' to ' + timeOnly( endfirsthalf ) + ' (' + minutesBetween(startgame, endfirsthalf) + ' minutes played)';								
+			document.getElementById('secondhalf').innerHTML = 'Half time';
+		}
+	}
+	if ( summary['startsecondhalf'] ){
+		var startsecondhalf = summary['startsecondhalf'];
+		if ( ! summary['endgame'] ){
+			document.getElementById('secondhalf').innerHTML = 'From: ' + timeOnly( startsecondhalf ) + ' Remaining: ' + minutesRemaining(startsecondhalf, datetime) + ' minutes';					
+		} else {
+			var endgame = summary['endgame'];
+			document.getElementById('secondhalf').innerHTML = 'From: ' + timeOnly( startsecondhalf ) + ' to ' + timeOnly( endgame ) + ' (' + minutesBetween(startsecondhalf, endgame) + ' minutes played)';								
+		}
+	}
+	if ( summary['endgame'] ) {
+		document.getElementById('fulltime').innerHTML = ( minutesBetween(startgame, endfirsthalf) * 1 + minutesBetween(startsecondhalf, endgame) * 1 ) + ' minutes played';
+	}
+}
+
+function minutesBetween(startDatetime, endDatetime){
+	var betweenS = seconds(endDatetime) - seconds(startDatetime);
+	return( Math.round(betweenS / 60)); // minutes
+}
+
+function minutesRemaining(startDatetime, endDatetime){
+	return( halfDurationMinutes - minutesBetween(startDatetime, endDatetime) ); // minutes
+}
+
+function timeOnly(datetime){
+	return(datetime.substring(datetime.indexOf('T') + 1, datetime.indexOf('.')));
+}
+
+function seconds(datetime){
+	var components = timeOnly(datetime).split(':');
+	return( components[2] * 1 + components[1] * 60 + components[0] * 60 * 60 );
 }
 
 const extract = document.getElementById("export");
@@ -379,6 +421,10 @@ function displayGameSummary(){
 		'		<th>Second Half</th>' +
 		'		<td><div id="secondhalf"></div></td>' +
 		'	</tr>' + 
+		'	<tr>' +
+		'		<th>Full time</th>' +
+		'		<td><div id="fulltime"></div></td>' +
+		'	</tr>' +
 		'</table>';
 }
 
@@ -494,17 +540,18 @@ function updateGametime(){
 			var player = playing[i];
 			if ( summary['gametime'] ){
 				if ( summary['gametime'][player]){
-					summary['gametime'][player] += timeAccuracy / 60;
+					summary['gametime'][player] += timeAccuracySeconds / 60;
 				} else {
-					summary['gametime'][player] = timeAccuracy / 60;					
+					summary['gametime'][player] = timeAccuracySeconds / 60;					
 				}
 			} else {
 				summary['gametime'] = [];
-				summary['gametime'][player] = timeAccuracy / 60;					
+				summary['gametime'][player] = timeAccuracySeconds / 60;					
 			}
 		}
 	}
 	updatePlayersSummary();
+	updateHalf(datetime());
 }
 
 function gametime(player){
