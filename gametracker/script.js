@@ -12,7 +12,7 @@ var playerEvents = [
 	];
 var nonplayerEvents = [ [ 'nonplayer', 'w3-amber', [ 'freekick', 'corner', 'throwin' ] ] ];
 var nonplayerTypes = [ 'Ours', 'Theirs' ];
-var gameEvents = [ [ 'game', 'w3-red', [ 'endfirsthalf', 'startsecondhalf', 'endgame' ] ] ];
+var gameEvents = [ [ 'game', 'w3-red', [ 'startgame', 'endfirsthalf', 'startsecondhalf', 'endgame' ] ] ];
 var summaryEvents = ['shotOnTarget', 'shotMissed', 'goal', 'assist'];
 var timeAccuracy = 30; 
 var oppositionLabel = 'Opposition';
@@ -118,7 +118,7 @@ function gameEvent(event){
 		displayGameSummary();
 		openTab('game_section');
 		show(['endfirsthalf']);
-		hide(['startsecondhalf','endgame']);
+		hide(['startgame', 'startsecondhalf','endgame']);
 		if ( subs.length == 0 ){ disable(['substitute'])}
 		updateHalf('firsthalf', startDatetime, '');
 		updatePlayers();
@@ -429,6 +429,9 @@ function addEvent(event, data){
 			}
 		}
 	}
+	if ( gameEvents[0][2].indexOf(event) > -1 ){
+		summary[event] = mydatetime;
+	}
 	
 	console.log('datetime=' + mydatetime + ' event=' + event + ' data=' + data.join(","));
 }
@@ -483,7 +486,10 @@ function show(divArray){
 }
 
 function updateGametime(){
-	if ( ! document.getElementById('endfirsthalf').disabled || ! document.getElementById('endgame').disabled ){
+	if ( 
+		( summary['startgame'] && ! summary['endfirsthalf'] ) ||
+		( summary['startsecondhalf'] && ! summary['endgame'] ) 
+		){
 		for ( i = 0; i < playing.length; i++){
 			var player = playing[i];
 			if ( summary['gametime'] ){
