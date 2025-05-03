@@ -113,11 +113,10 @@ function gameEvent(event){
 			playing.push(player);
 		}
 		addEvent(event, playing);
-		enable(['game_section_tab']);
-		enable(['summary_section_tab']);
+		enable(['player_section_tab', 'playerevent_section_tab', 'summary_section_tab']);
 		displayEvents();
 		displayGameSummary();
-		openTab('game_section');
+		openTab('player_section');
 		disable(['kickoff']);
 		show(['endfirsthalf']);
 		hide(['startgame','startsecondhalf','endgame']);
