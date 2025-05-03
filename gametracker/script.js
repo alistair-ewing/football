@@ -113,13 +113,13 @@ function gameEvent(event){
 			playing.push(player);
 		}
 		addEvent(event, playing);
-		enable(['player_section_tab', 'playerevent_section_tab', 'summary_section_tab']);
+		enable(['player_section_tab', 'event_section_tab',  'playerevent_section_tab', 'summary_section_tab']);
 		displayEvents();
 		displayGameSummary();
 		openTab('player_section');
 		disable(['kickoff']);
-		show(['endfirsthalf']);
-		hide(['startgame','startsecondhalf','endgame']);
+		show(['endfirsthalf','eventendfirsthalf']);
+		hide(['startgame','startsecondhalf','endgame','eventstartgame','eventstartsecondhalf','eventendgame']);
 		if ( subs.length == 0 ){ disable(['substitute'])}
 		updateHalf(startDatetime);
 		updatePlayers();
@@ -129,20 +129,20 @@ function gameEvent(event){
 		endDatetime = datetime();
 		addEvent(event, playing);
 		show(['summary_section']);
-		hide(['endgame']);
+		hide(['endgame','eventendgame']);
 		openTab('summary_section');
 		updateHalf(endDatetime);
 	} else if ( event == 'endfirsthalf' ){
 		endDatetime = datetime();
 		addEvent(event, playing);
-		hide(['endfirsthalf']);
-		show(['startsecondhalf']);
+		hide(['endfirsthalf','eventendfirsthalf']);
+		show(['startsecondhalf','eventstartsecondhalf']);
 		updateHalf(endDatetime);
 	} else if ( event == 'startsecondhalf' ){
 		endDatetime = datetime();
 		addEvent(event, playing);
-		hide(['startsecondhalf']);
-		show(['endgame']);
+		hide(['startsecondhalf','eventstartsecondhalf']);
+		show(['endgame','eventendgame']);
 		updateHalf(endDatetime);		
 	}
 }
@@ -253,6 +253,48 @@ function displayEvents(){
 	}
 	document.getElementById('game-events').innerHTML = allEvents;
 
+	var allEvents =  '';
+	for ( i = 0; i < playerEvents.length; i++ ){
+		var eventClass = playerEvents[i][0];
+		var eventColour = playerEvents[i][1];
+		var eventDetails = playerEvents[i][2];
+		allEvents += '<div class="w3-container ' + eventColour + '" id="event' + eventClass + '">';
+		  for ( j = 0; j < eventDetails.length; j++ ){
+			  for ( k = 0; k < nonplayerTypes.length; k ++ ){
+				var thisEvent = eventDetails[j] +  nonplayerTypes[k];
+				allEvents += '<span class="w3-button w3-black" id="event' + thisEvent + '"' +
+				' onclick="addEvent(\'' + thisEvent + '\', []);">' + thisEvent + '</span>';
+			  }
+		  }
+		allEvents += '</div>';
+	}
+	for ( i = 0; i < nonplayerEvents.length; i++ ){
+		var eventClass = nonplayerEvents[i][0];
+		var eventColour = nonplayerEvents[i][1];
+		var eventDetails = nonplayerEvents[i][2];
+		allEvents += '<div class="w3-container ' + eventColour + '" id="event' + eventClass + '">';
+		  for ( j = 0; j < eventDetails.length; j++ ){
+			  for ( k = 0; k < nonplayerTypes.length; k ++ ){
+				  var thisEvent = eventDetails[j] +  nonplayerTypes[k];
+				  allEvents += '<span class="w3-button w3-black" id="event' + thisEvent + '"' + 
+					' onclick="addEvent(\'' + thisEvent + '\', []);">' + thisEvent + '</span>';				  
+			  }
+		  }
+		allEvents += '</div>';
+	}
+	for ( i = 0; i < gameEvents.length; i++ ){
+		var eventClass = gameEvents[i][0];
+		var eventColour = gameEvents[i][1];
+		var eventDetails = gameEvents[i][2];
+		allEvents += '<div class="w3-container ' + eventColour + '" id="event' + eventClass + '">';
+		  for ( j = 0; j < eventDetails.length; j++ ){
+			  var thisEvent = eventDetails[j];
+			  allEvents += '<span class="w3-button w3-black" id="event' + thisEvent + '"' +
+			  ' onclick="gameEvent(\'' + thisEvent + '\');">' + thisEvent + '</span>';
+		  }
+		allEvents += '</div>';
+	}
+	document.getElementById('gameevent-events').innerHTML = allEvents;
 }
 
 function playerEvent(evt, opposition){
@@ -327,7 +369,7 @@ function recordEvent(name, player){
 		var subslist = ['<div class="w3-center w3-container">Substitute On: ' + player + '</div>'];
 		for (i = 0; i < subs.length; i++){
 			var sub = subs[i];
-			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substitute\', \'' + sub + '_' + player + '\');">' + sub + '</span>');
+			subslist.push('<span class="w3-button player active w3-light-blue" onclick="recordEvent(\'substitute\', \'' + sub + '_' + player + '\');">' + sub + '</span>');
 		}
 		document.getElementById('subs-modal').innerHTML =
 					'<div class="w3-modal-content">' +
@@ -344,7 +386,7 @@ function recordEvent(name, player){
 		var subslist = ['<div class="w3-center w3-container">Substitute Off: ' + player + '</div>'];
 		for (i = 0; i < playing.length; i++){
 			var sub = players[i];
-			subslist.push('<span class="w3-button player active" onclick="recordEvent(\'substitute\', \'' + player + '_' + sub + '\');">' + sub + '</span>');
+			subslist.push('<span class="w3-button player active w3-indigo" onclick="recordEvent(\'substitute\', \'' + player + '_' + sub + '\');">' + sub + '</span>');
 		}
 		document.getElementById('subs-modal').innerHTML = 
 					'<div class="w3-modal-content">' +

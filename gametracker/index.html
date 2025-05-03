@@ -17,7 +17,7 @@
 		#game_section, #summary_section, #playing {
 			font-size: 8px;
 		} 
-		#game-events, .event, .player, .opposition, .tablink, #squadlist		{
+		#game-events, #gameevent-events, .event, .player, .opposition, .tablink, #squadlist {
 		  font-size: 6px;
 		}
 	</style>
@@ -30,10 +30,11 @@
 <body>
 
 	<div class="w3-bar w3-black">
-		<button id="squad_section_tab" class="w3-bar-item w3-button tablink w3-red" onclick="openTab('squad_section')">Squad</button>
-		<button id="player_section_tab" class="w3-bar-item w3-button tablink"  onclick="openTab('player_section')" disabled>Player</button>
-		<button id="playerevent_section_tab" class="w3-bar-item w3-button tablink"  onclick="openTab('playerevent_section')" disabled>PlayerEvent</button>
-		<button id="summary_section_tab" class="w3-bar-item w3-button tablink" onclick="openTab('summary_section')" disabled>Summary</button>
+		<button id="squad_section_tab"       class="w3-bar-item w3-button tablink w3-red" onclick="openTab('squad_section')"               >Squad</button>
+		<button id="player_section_tab"      class="w3-bar-item w3-button tablink"        onclick="openTab('player_section')"      disabled>Player</button>
+		<button id="event_section_tab"       class="w3-bar-item w3-button tablink"        onclick="openTab('event_section')"       disabled>Event</button>
+		<button id="playerevent_section_tab" class="w3-bar-item w3-button tablink"        onclick="openTab('playerevent_section')" disabled>PlayerEvent</button>
+		<button id="summary_section_tab"     class="w3-bar-item w3-button tablink"        onclick="openTab('summary_section')"     disabled>Summary</button>
 	</div>
  
 	<div id="squad_section" class="w3-container section">
@@ -42,21 +43,28 @@
 		<button id="kickoff" onclick="gameEvent('startgame');">Kick off</button>
 	</div>
 	
+	<div id="events-modal"  class="w3-modal"></div>
+	<div id="players-modal" class="w3-modal"></div>
+	<div id="subs-modal"    class="w3-modal"></div>
+
 	<div id="player_section" class="section">
 		<div class="w3-container">
 			<div class="w3-col">
 				<div id="playing"></div>
 				<div id="subs"></div>
-				<div id="events-modal" class="w3-modal w3-container"></div>
 			</div>
+		</div>
+	</div>
+	
+	<div id="event_section" class="section">
+		<div class="w3-container">
+			<div class="w3-col" id="gameevent-events"></div>
 		</div>
 	</div>
 	
 	<div id="playerevent_section" class="section">
 		<div class="w3-container">
 			<div class="w3-col" id="game-events"></div>
-			<div id="players-modal" class="w3-modal"></div>
-			<div id="subs-modal" class="w3-modal w3-container"></div>
 		</div>
 	</div>
 	
